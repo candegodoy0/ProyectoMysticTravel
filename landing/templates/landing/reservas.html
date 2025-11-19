@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Reservas - Mystic Travel{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'landing/css/landing.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="reservas-page">
+    <h2 class="section-title">Reserva tu Viaje Soñado</h2>
+
+    {% if enviado %}
+    <div class="mensaje-exito">
+        <h3>¡Gracias por tu interés, {{ nombre|title }}!</h3>
+        <p>Tu solicitud de reserva ha sido enviada con éxito. Nuestro equipo te contactará pronto para finalizar los detalles de tu aventura.</p>
+        <p>"El universo conspira a favor de quienes sueñan sin límites."</p>
+        <a href="{% url 'landing:home' %}" class="cta">Volver al Inicio</a>
+    </div>
+
+    {% else %}
+
+    <p class="intro-paragraph">
+        Cuéntanos el destino que te inspira, el número de viajeros y cualquier detalle que nos ayude a personalizar tu experiencia mística.
+    </p>
+
+    <div class="reserva-form">
+        <form action="{% url 'landing:reservas' %}" method="post">
+            {% csrf_token %}
+
+            {{ form.non_field_errors }}
+
+            <div class="form-row">
+                <label for="{{ form.nombre.id_for_label }}">Tu Nombre Completo</label>
+                {{ form.nombre }}
+                {% if form.nombre.errors %}
+                    <div class="error-message">
+                        {% for error in form.nombre.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-row">
+                <label for="{{ form.email.id_for_label }}">Correo Electrónico</label>
+                {{ form.email }}
+                {% if form.email.errors %}
+                    <div class="error-message">
+                        {% for error in form.email.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-row">
+                <label for="{{ form.destino.id_for_label }}">Destino de Interés</label>
+                {{ form.destino }}
+                {% if form.destino.errors %}
+                    <div class="error-message">
+                        {% for error in form.destino.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-row">
+                <label for="{{ form.viajeros.id_for_label }}">Número de Viajeros</label>
+                {{ form.viajeros }}
+                {% if form.viajeros.errors %}
+                    <div class="error-message">
+                        {% for error in form.viajeros.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-row">
+                <label for="{{ form.mensaje.id_for_label }}">Mensaje / Detalles Adicionales</label>
+                {{ form.mensaje }}
+                {% if form.mensaje.errors %}
+                    <div class="error-message">
+                        {% for error in form.mensaje.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <button type="submit" class="btn-primary">ENVIAR SOLICITUD DE RESERVA</button>
+        </form>
+    </div>
+    {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Listado de Reservas - Mystic Travel{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'landing/css/landing.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="listado-main content-start-offset">
+    <h2 class="section-title">Reservas Recibidas (Total: {{ reservas.count }})</h2>
+
+    {% if reservas %}
+    <div class="table-container">  <table class="reserva-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Fecha</th>
+                    <th>Nombre</th>
+                    <th>Destino</th>
+                    <th>Viajeros</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for reserva in reservas %}
+                <tr>
+                    <td>{{ reserva.pk }}</td>
+                    <td>{{ reserva.fecha_creacion|date:"Y-m-d H:i" }}</td>
+                    <td>{{ reserva.nombre }}</td>
+                    <td>{{ reserva.destino }}</td>
+                    <td>{{ reserva.viajeros }}</td>
+                    <td>
+                        <a href="{% url 'landing:reserva_detalle' pk=reserva.pk %}" class="btn-sm">Detalle</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="no-data">
+        <p>Aún no hay reservas registradas en la base de datos.</p>
+        <a href="{% url 'landing:dashboard' %}" class="cta">Volver al Dashboard</a>
+    </div>
+    {% endif %}
+
+    <div class="back-link">
+        <a href="{% url 'landing:dashboard' %}">← Volver al Dashboard</a>
+    </div>
+</section>
+{% endblock %}

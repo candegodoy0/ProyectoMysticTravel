@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block title %}Galería de Destinos - Mystic Travel{% endblock %}
+
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'landing/css/landing.css' %}">
+{% endblock %}
+
+
+{% block content %}
+<section class="galeria-main"> <h2 class="section-title">Galería de Destinos Exóticos</h2>
+   <p class="intro-paragraph">
+     Sumérgete en la magia de los lugares más remotos y espectaculares. Desde el hielo de Islandia hasta el color vibrante de Tailandia, cada destino es una promesa de aventura y descubrimiento.
+   </p>
+
+
+   <div class="gallery-menu">
+     {% for destino in destinos %}
+     <div class="gallery-item">
+       <a href="{% url 'landing:galeria_destino' destino.slug %}">
+         <img src="{% static 'images/galeria/' %}{{ destino.slug }}/{{ destino.slug }}1.jpg" alt="{{ destino.nombre }}">
+         <h3>{{ destino.nombre }}</h3>
+       </a>
+     </div>
+     {% endfor %}
+   </div>
+</section>
+{% endblock %}

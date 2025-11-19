@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block title %}{{ destino|title }} - Mystic Travel{% endblock %}
+
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'landing/css/landing.css' %}">
+{% endblock %}
+
+
+{% block content %}
+<section class="subgaleria-main"> <h2 class="section-title">{{ destino|title }}</h2>
+   <p class="intro-paragraph">
+     {{ descripcion|capfirst }} </p>
+
+
+   <div class="subgallery-menu">
+     {% for i in imagenes_range %}
+     <div class="gallery-item">
+       <img src="{% static 'images/galeria/' %}{{ destino }}/{{ destino }}{{ i }}.jpg" alt="{{ destino|title }} - Imagen {{ i }}">
+     </div>
+     {% endfor %}
+   </div>
+</section>
+{% endblock %}

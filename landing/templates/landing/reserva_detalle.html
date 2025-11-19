@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Detalle Reserva #{{ reserva.pk }} - Mystic Travel{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'landing/css/landing.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="detalle-main content-start-offset">
+    <h2 class="section-title">Detalle de Reserva #{{ reserva.pk }}</h2>
+
+    <div class="detalle-card">
+        <div class="detalle-group">
+            <p><strong>Fecha de Solicitud:</strong> <span>{{ reserva.fecha_creacion|date:"d M Y H:i" }}</span></p>
+            <p><strong>Nombre:</strong> <span>{{ reserva.nombre }}</span></p>
+            <p><strong>Correo Electrónico:</strong> <span>{{ reserva.email }}</span></p>
+            <p><strong>Destino de Interés:</strong> <span>{{ reserva.destino }}</span></p>
+            <p><strong>Cantidad de Viajeros:</strong> <span>{{ reserva.viajeros }}</span></p>
+        </div>
+
+        <h4 class="mensaje-title">Mensaje Adicional del Cliente:</h4>
+        <div class="mensaje-box">
+            <p>{{ reserva.mensaje|default:"(Sin mensaje adicional)" }}</p>
+        </div>
+
+        <div class="detalle-acciones">
+            <a href="{% url 'landing:reserva_editar' pk=reserva.pk %}" class="cta cta-edit">Editar</a>
+            <a href="{% url 'landing:reserva_eliminar' pk=reserva.pk %}" class="cta cta-delete-alt">Eliminar</a>
+        </div>
+    </div>
+
+    <div class="back-link back-to-list">
+        <a href="{% url 'landing:listado_reservas' %}">← Volver al Listado</a>
+    </div>
+</section>
+{% endblock %}

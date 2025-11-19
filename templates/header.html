@@ -1,0 +1,53 @@
+{% load static %}
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <link rel="stylesheet" href="{% static 'css/global.css' %}">
+    <link rel="stylesheet" href="{% static 'landing/css/landing.css' %}">
+</head>
+
+<header class="main-header" id="app-main-header">
+    <div class="header-content container">
+        <a href="{% url 'landing:home' %}" class="logo">MYSTIC TRAVEL</a>
+
+        <button class="nav-toggle" aria-label="Abrir menú" aria-expanded="false">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <nav class="main-nav" id="main-navigation">
+            <ul class="nav-links">
+                <li><a href="{% url 'landing:home' %}">Inicio</a></li>
+                <li><a href="{% url 'landing:galeria' %}">Galería</a></li>
+                <li><a href="{% url 'landing:info' %}">Info</a></li>
+
+                <li><a href="{% url 'landing:reservas' %}" class="cta-nav">Reservas</a></li>
+
+                {% if user.is_authenticated %}
+
+                    {% if user.is_staff %}
+                        <li><a href="{% url 'landing:dashboard' %}" class="nav-icon-link">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a></li>
+                    {% else %}
+                        <li><a href="{% url 'landing:user_panel' %}" class="nav-icon-link">
+                            Dashboard
+                        </a></li>
+                    {% endif %}
+
+                    <li>
+                        <form action="{% url 'landing:logout' %}" method="post" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-nav-icon">
+                                <i class="fas fa-sign-out-alt"></i> Salir
+                            </button>
+                        </form>
+                    </li>
+                {% else %}
+                    <li><a href="{% url 'landing:login' %}" class="cta-nav-acceder">
+                        <i class="fas fa-user-circle"></i> Acceder
+                    </a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+</header>

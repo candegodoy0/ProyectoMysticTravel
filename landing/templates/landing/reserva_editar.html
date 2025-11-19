@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Editar Reserva #{{ reserva.pk }} - Mystic Travel{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'landing/css/landing.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="reserva-main content-start-offset"> 
+    <h2 class="section-title">Editar Reserva de {{ reserva.nombre }}</h2>
+
+    <div class="reserva-form bg-textura">
+      <form method="post" novalidate id="reserva-edit-form">
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <button type="submit" class="btn-primary">GUARDAR CAMBIOS</button>
+      </form>
+    </div>
+
+    <div class="back-link">
+        <a href="{% url 'landing:reserva_detalle' pk=reserva.pk %}">← Cancelar y Volver</a>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/modificar_consulta.js' %}"></script>
+{% endblock %}

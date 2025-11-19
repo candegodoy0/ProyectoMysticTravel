@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block title %}Información - Mystic Travel{% endblock %}
+
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'landing/css/landing.css' %}">
+{% endblock %}
+
+
+{% block content %}
+<section class="info-page"> <h2 class="section-title">Sobre Mystic Travel</h2>
+
+
+   <section class="info-section">
+     <div class="info-text">
+       <h2>Tu Aventura Comienza Aquí</h2>
+       <p>Mystic Travel no es solo una agencia; somos tus guías hacia lo extraordinario. Organizamos experiencias únicas en destinos exóticos y remotos. Desde el corazón del Sahara hasta los géiseres islandeses, transformamos cada viaje en una <strong>aventura memorable</strong> y profundamente personal.</p>
+       <p>Creemos que viajar debe ser una inmersión completa. Te acompañamos en cada paso para que te concentres solo en disfrutar y descubrir.</p>
+       <ul class="info-list">
+         <li><img src="{% static 'images/iconos/camara.jpg' %}" alt="Icono de cámara"> Captura<strong>Momentos Únicos</strong></li>
+         <li><img src="{% static 'images/iconos/maleta.jpg' %}" alt="Icono de maleta"> Viaja<strong>Sin Preocupaciones</strong></li>
+         <li><img src="{% static 'images/iconos/avion2.jpg' %}" alt="Icono de avión"> <strong>Conectamos</strong>Destinos Lejanos</li>
+       </ul>
+     </div>
+     <div class="info-img">
+       <img src="{% static 'images/lifestyle/mochilero.jpg' %}" alt="Persona haciendo senderismo en montaña">
+     </div>
+   </section>
+
+
+   <section class="info-section reverse" style="margin-top: 5rem;">
+     <div class="info-text">
+       <h2>Compromiso con la Exploración</h2>
+       <p>Nuestra misión es llevarte más allá del turismo tradicional. Trabajamos con guías locales y pequeñas empresas para ofrecerte una perspectiva <strong>auténtica y sostenible</strong> de cada cultura. Viajar con mystic travel es apoyar a las comunidades que visitas.</p>
+       <p>Desde la planificación hasta el último día de tu aventura, nuestro equipo se encarga de todos los detalles: desde alojamientos boutique y rutas gastronómicas secretas, hasta el soporte 24/7 en cualquier huso horario.</p>
+       <p>¡Prepárate para desempacar tu curiosidad y empacar recuerdos inolvidables!</p>
+       <a class="cta" href="{% url 'landing:reservas' %}">RESERVA TU VIAJE HOY</a>
+     </div>
+     <div class="info-img">
+       <img src="{% static 'images/lifestyle/amigos.jpg' %}" alt="Grupo de amigos viajando por la costa en una camioneta">
+     </div>
+   </section>
+</section>
+{% endblock %}

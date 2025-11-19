@@ -1,0 +1,205 @@
+:root{
+  --tierra-oscura: #5D4037;
+  --acento: #d35d6e;
+  --terracota-suave: #E8A87C;
+  --marfil: #F8F3D4;
+  --blanco-suave: #FAF7F0;
+  --texto: #4A4A4A;
+    --titulo-font: "Cinzel Decorative", serif;
+  --cuerpo-font: "Quicksand", sans-serif;
+    --nav-height-desktop: 80px;
+  --nav-height-mobile: 95px;
+  --content-offset-desktop: var(--nav-height-desktop);
+  --content-offset-mobile: var(--nav-height-mobile);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body{
+  margin: 0;
+  padding: 0;
+  font-family: var(--cuerpo-font);
+  color: var(--texto);
+  background-color: var(--marfil);
+  line-height: 1.6;
+  background: var(--marfil) url('../images/texturas/papel.jpg') repeat;
+  background-size: 300px 300px;
+  padding-top: var(--content-offset-desktop);
+}
+
+a {
+  color: var(--tierra-oscura);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.container{
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* para que el scroll salte bien con el header fijo */
+[id] {
+  scroll-margin-top: calc(var(--content-offset-desktop) + 10px);
+}
+
+section {
+   padding: 0 20px 60px 20px;
+}
+
+.cta, .cta-edit, .cta-delete-alt, .cta-delete, .cta-secondary {
+    background: var(--acento);
+    color: white;
+    padding: 0.8rem 1.5rem;
+    font-weight: 700;
+    border: 3px solid white;
+    border-radius: 8px;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+    letter-spacing: 0.05em;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.cta:hover {
+   background: var(--terracota-suave);
+   border-color: var(--marfil);
+   transform: translateY(-3px);
+   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+}
+
+.cta-alt {
+    background: #757575;
+    border-color: #A1A1A1;
+}
+
+.cta-alt:hover {
+    background: #616161;
+}
+
+.cta-admin {
+    /* para el dashbord */
+    background: var(--tierra-oscura);
+    border-color: var(--terracota-suave);
+}
+
+.cta-edit {
+    background: var(--tierra-oscura);
+    border-color: var(--terracota-suave);
+}
+
+.cta-delete {
+    background: #D32F2F;
+    border-color: white;
+}
+
+.cta-delete:hover {
+    background: #C62828;
+}
+
+.cta-delete-alt {
+    background: #757575;
+    border-color: #A1A1A1;
+}
+
+.cta-delete-alt:hover {
+    background: #616161;
+}
+
+.cta-secondary {
+    background: var(--terracota-suave);
+    color: var(--tierra-oscura);
+    border-color: var(--tierra-oscura);
+}
+
+.cta-secondary:hover {
+    background: #D3A286;
+    transform: translateY(-2px);
+}
+
+/* el boton primario del formulario de reserva */
+.btn-primary {
+   display: block;
+   width: 100%;
+   text-align: center;
+   margin-top: 2.5rem;
+   background: var(--acento);
+   color: white;
+   font-family: var(--titulo-font);
+   font-size: 1.5rem;
+   padding: 1rem 3rem;
+   border: none;
+   border-radius: 10px;
+   cursor: pointer;
+   transition: all 0.3s ease;
+   letter-spacing: 0.15em;
+   text-transform: uppercase;
+   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+
+.btn-primary:hover {
+   background: var(--terracota-suave);
+   transform: translateY(-3px);
+   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+}
+
+.btn-sm {
+    display: inline-block;
+    padding: 5px 12px;
+    background-color: var(--acento);
+    color: white;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 0.8rem;
+    font-weight: 600;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.btn-sm:hover {
+    background-color: var(--terracota-suave);
+    transform: translateY(-1px);
+}
+
+/* mensaje de error general */
+.error-message {
+   color: var(--acento);
+   font-size: 1.05rem;
+   margin-top: 5px;
+   padding: 2px 0;
+   display: block;
+}
+
+.error-message.error-inline p {
+   margin: 0;
+   line-height: 1.2;
+   display: inline;
+}
+
+/* pie de pagina */
+.site-footer{
+  padding: 2.5rem 0;
+  background: var(--tierra-oscura);
+  color: #fff;
+  text-align: center;
+  margin-top: 4rem;
+  font-size: 0.9rem;
+}
+
+
+@media (max-width: 992px) {
+    /* esto es para que se ajuste el padding de arriba en mobile */
+    body {
+        padding-top: var(--content-offset-mobile) !important;
+    }
+
+    [id] {
+        /* para que el ancla funcione bien en mobile */
+        scroll-margin-top: calc(var(--content-offset-mobile) + 10px);
+    }
+}

@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Confirmar Eliminación - Mystic Travel{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'landing/css/landing.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="detalle-main content-start-offset"> 
+    <h2 class="section-title warning-title">Confirmar Eliminación</h2>
+
+    <div class="detalle-card warning-card">
+        <p class="warning-text">
+            ¿Estás seguro/a de que deseas <strong>eliminar permanentemente</strong> la reserva de:
+        </p>
+        <h3 class="reserva-warning-name">{{ reserva.nombre }} para {{ reserva.destino }}?</h3>
+
+        <form method="post" action="{% url 'landing:reserva_eliminar' pk=reserva.pk %}" id="reserva-delete-form">
+            {% csrf_token %}
+            <button type="submit" class="cta cta-delete">SÍ, ELIMINAR AHORA</button>
+        </form>
+
+        <a href="{% url 'landing:reserva_detalle' pk=reserva.pk %}" class="cta cta-secondary cta-back-safe">
+            NO, MANTENER RESERVA
+        </a>
+    </div>
+
+    <div class="back-link back-to-list">
+        <a href="{% url 'landing:reserva_detalle' pk=reserva.pk %}">← Volver al Detalle de Reserva</a>
+    </div>
+
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/eliminar_consulta.js' %}"></script>
+{% endblock %}
