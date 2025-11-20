@@ -60,15 +60,14 @@ TEMPLATES = [
 WSGI_APPLICATION = 'mi_sitio.wsgi.application'
 
 
+import dj_database_url
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'mystic_travel_db',
-        'USER': 'postgres',
-        'PASSWORD': 'Cande1937',
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
+'default': dj_database_url.config(
+    default='postgresql://proyectomystictravel_user:K55PkZqCGGg0e2HbDbvaKA92XI5ZULfE@dpg-d4f108v5r7bs73cp1t00-a.oregon-postgres.render.com/proyectomystictravel',
+    conn_max_age=600,
+ssl_require=True
+)
 }
 
 

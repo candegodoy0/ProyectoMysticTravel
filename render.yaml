@@ -4,8 +4,8 @@ services:
     env: python
 
     buildCommand: |
-      pip install -r requirements.txt
-      python manage.py migrate
+      pip install -r requirements.txt &&
+      python manage.py migrate &&
       python manage.py collectstatic --noinput
 
     startCommand: "gunicorn --workers 1 mi_sitio.wsgi:application"
@@ -14,4 +14,4 @@ services:
       - key: DJANGO_SETTINGS_MODULE
         value: mi_sitio.settings
       - key: DATABASE_URL
-        value: postgresql://proyectodjango_ojaa_user:i2laqK4UoZokda7LRTmQJw7NAdbLnHub@dpg-d4dsag8dl3ps73dj14jg-a.oregon-postgres.render.com/proyectodjango_ojaa
+        value: postgresql://proyectomystictravel_user:K55PkZqCGGg0e2HbDbvaKA92XI5ZULfE@dpg-d4f108v5r7bs73cp1t00-a.oregon-postgres.render.com/proyectomystictravel
