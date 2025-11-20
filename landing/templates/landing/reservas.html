@@ -26,7 +26,7 @@
     </p>
 
     <div class="reserva-form">
-        <form action="{% url 'landing:reservas' %}" method="post">
+        <form action="{% url 'landing:reservas' %}" method="post" id="reserva-form">
             {% csrf_token %}
 
             {{ form.non_field_errors }}
@@ -91,9 +91,19 @@
                 {% endif %}
             </div>
 
-            <button type="submit" class="btn-primary">ENVIAR SOLICITUD DE RESERVA</button>
+            <button type="submit" class="btn-primary" id="btn-reserva-submit">
+                ENVIAR SOLICITUD DE RESERVA
+            </button>
+
+            <div id="mensaje-enviando" class="mensaje-enviando" style="display: none;">
+                <p>Enviando solicitud... Por favor, espera.</p>
+            </div>
         </form>
     </div>
     {% endif %}
 </section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'landing/js/script.js' %}"></script>
 {% endblock %}

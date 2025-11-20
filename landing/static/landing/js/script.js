@@ -39,4 +39,28 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     }
+
+    const reservaForm = document.getElementById('reserva-form');
+    const submitButton = document.getElementById('btn-reserva-submit');
+    const loadingMessage = document.getElementById('mensaje-enviando');
+
+    if (reservaForm && submitButton && loadingMessage) {
+        reservaForm.addEventListener('submit', function(event) {
+
+            // antes de enviar, verifica que el boton no este ya deshabilitado
+            if (submitButton.disabled) {
+                // si ya esta deshabilitado, previene el reenvio
+                event.preventDefault();
+                return;
+            }
+
+            // deshabilitar el botón y cambiar su texto
+            submitButton.disabled = true;
+            submitButton.textContent = 'PROCESANDO SOLICITUD...';
+
+            // mostrar el mensaje de enviando
+            loadingMessage.style.display = 'block';
+
+        });
+    }
 });

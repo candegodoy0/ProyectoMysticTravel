@@ -1125,6 +1125,36 @@ header, nav {
     display: inline-block;
 }
 
+/* estilos para el boton deshabilitado */
+.btn-primary:disabled,
+.btn-primary[disabled] {
+   background: #A9A9A9; /* Un gris claro */
+   color: #EEEEEE;
+   cursor: not-allowed;
+   pointer-events: none;
+   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+   transform: none;
+}
+
+.btn-primary:disabled:hover {
+   background: #A9A9A9;
+   transform: none;
+   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+}
+
+.mensaje-enviando {
+    text-align: center;
+    margin-top: 1.5rem;
+    padding: 10px;
+    background-color: var(--marfil);
+    border: 1px solid var(--terracota-suave);
+    border-radius: 8px;
+    color: var(--tierra-oscura);
+    font-weight: 600;
+    font-style: italic;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
 @media (max-width: 992px) {
     /* esto es para que el header se vea bien en mobile */
     #app-main-header {
