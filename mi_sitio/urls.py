@@ -19,7 +19,6 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from landing import views
-from . import create_superuser
 
 router = DefaultRouter()
 router.register(r'v1/reservas', views.ReservaViewSet, basename='reservas')
