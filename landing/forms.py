@@ -112,3 +112,12 @@ class ContactoForm(forms.Form):
             raise forms.ValidationError('El nombre solo debe contener letras y espacios.')
 
         return nombre
+
+    # --- formulario paara validar cuenta
+    class CodigoValidacionForm(forms.Form):
+        codigo = forms.CharField(
+            label='Código de Validación',
+            max_length=8,
+            widget=forms.TextInput(attrs={'placeholder': 'Ingrese el código de 8 dígitos'}),
+            error_messages={'required': 'Debe ingresar el código de validación.'}
+        )
