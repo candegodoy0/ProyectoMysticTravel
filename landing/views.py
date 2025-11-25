@@ -20,27 +20,37 @@ from django.conf import settings
 
 
 
+
 def es_admin(user):
     """verifica si el usuario esta activo y es admin"""
     return user.is_active and user.is_staff
 
 
-# --- funciones de mail ---
 
-def enviar_email_html(asunto, destinatario, html_content):
+def enviar_multiples_emails(emails_a_enviar):
+    """
+    establece una unica conexion con el servidor SMTP para enviar multiples mensajes,
+    evitando la latencia de reabrir la conexion en cada email
+    emails_a_enviar es una lista de diccionarios: [{'asunto':..., 'destinatario':..., 'html_content':...}]
+    """
+    if not emails_a_enviar:
+        return
+
     try:
-        msg = MIMEText(html_content, "html", "utf-8")
-        msg["Subject"] = asunto
-        msg["From"] = settings.EMAIL_HOST_USER
-        msg["To"] = destinatario
-
         context = ssl._create_unverified_context()
         with smtplib.SMTP_SSL(settings.EMAIL_HOST, settings.EMAIL_PORT, context=context) as server:
             server.login(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)
-            server.send_message(msg)
+
+            for email_data in emails_a_enviar:
+                msg = MIMEText(email_data["html_content"], "html", "utf-8")
+                msg["Subject"] = email_data["asunto"]
+                msg["From"] = settings.EMAIL_HOST_USER
+                msg["To"] = email_data["destinatario"]
+
+                server.send_message(msg)
 
     except Exception as e:
-        print(f"❌ Error al enviar email: {e}")
+        print(f"❌ Error al enviar emails: {e}")
 
 
 # --- vistas de autenticacion y paneles ---
@@ -52,7 +62,7 @@ def registro(request):
             user = form.save()
             login(request, user)
             messages.success(request, '¡Registro exitoso! Ya puedes acceder a tu cuenta.')
-            return redirect('landing:user_panel')  # Redirigir al panel de usuario
+            return redirect('landing:user_panel')  # redirigir al panel de usuario
     else:
         form = UserCreationForm()
     return render(request, 'landing/registro.html', {'form': form})
@@ -113,7 +123,9 @@ def home(request):
 
             Contacto.objects.create(nombre=nombre, email=email, mensaje=mensaje)
 
-            # --- envio de emails admin ---
+            emails = []
+
+            # envio de emails admin
             html_admin = f"""
             <div style="background:#f5f5f5;padding:20px;">
                 <div style="background:white;padding:20px;border-radius:8px;">
@@ -125,14 +137,13 @@ def home(request):
                 </div>
             </div>
             """
+            emails.append({
+                'asunto': f"Nuevo contacto | Mystic Travel - {nombre}",
+                'destinatario': "candela.godoy@lalupitacontenidos.site",
+                'html_content': html_admin
+            })
 
-            enviar_email_html(
-                asunto=f"Nuevo contacto | Mystic Travel - {nombre}",
-                destinatario="candela.godoy@lalupitacontenidos.site",
-                html_content=html_admin,
-            )
-
-            # --- envio de mails usuario ---
+            # envio de mails usuario
             html_user = f"""
             <div style="background:#f5f5f5;padding:20px;">
                 <div style="background:white;padding:20px;border-radius:8px;">
@@ -143,12 +154,13 @@ def home(request):
                 </div>
             </div>
             """
+            emails.append({
+                'asunto': "Confirmación de contacto | Mystic Travel",
+                'destinatario': email,
+                'html_content': html_user
+            })
 
-            enviar_email_html(
-                asunto="Confirmación de contacto | Mystic Travel",
-                destinatario=email,
-                html_content=html_user,
-            )
+            enviar_multiples_emails(emails)
 
             messages.success(request, '¡Gracias por tu mensaje! Te responderemos pronto.')
             nombre_contacto = nombre
@@ -158,6 +170,9 @@ def home(request):
 
             enviado = True
             form = ContactoForm()
+
+            return redirect('landing:home')
+
 
         else:
             if is_ajax:
@@ -217,7 +232,9 @@ def reservas(request):
 
     if request.method == 'POST':
         form = ReservaForm(request.POST)
+
         if form.is_valid():
+            # crear la reserva
             reserva = Reserva.objects.create(
                 nombre=form.cleaned_data['nombre'],
                 email=form.cleaned_data['email'],
@@ -226,7 +243,9 @@ def reservas(request):
                 mensaje=form.cleaned_data['mensaje'],
             )
 
-            # --- envio de emails admin ---
+            emails = []
+
+            # envio de emails admin
             html_admin = f"""
             <div style="background:#f5f5f5;padding:20px;">
                 <div style="background:white;padding:20px;border-radius:8px;">
@@ -240,14 +259,13 @@ def reservas(request):
                 </div>
             </div>
             """
+            emails.append({
+                'asunto': f"Nueva reserva | {reserva.destino} - {reserva.nombre}",
+                'destinatario': "candela.godoy@lalupitacontenidos.site",
+                'html_content': html_admin
+            })
 
-            enviar_email_html(
-                asunto=f"Nueva reserva | {reserva.destino} - {reserva.nombre}",
-                destinatario="candela.godoy@lalupitacontenidos.site",
-                html_content=html_admin
-            )
-
-            # --- envio de email usuario ---
+            # envio de email usuario
             html_user = f"""
             <div style="background:#f5f5f5;padding:20px;">
                 <div style="background:white;padding:20px;border-radius:8px;">
@@ -260,17 +278,17 @@ def reservas(request):
                 </div>
             </div>
             """
+            emails.append({
+                'asunto': "Confirmación de reserva | Mystic Travel",
+                'destinatario': reserva.email,
+                'html_content': html_user
+            })
 
-            enviar_email_html(
-                asunto="Confirmación de reserva | Mystic Travel",
-                destinatario=reserva.email,
-                html_content=html_user
-            )
+            enviar_multiples_emails(emails)
 
             messages.success(request, f"¡Reserva para {reserva.destino} creada con éxito!")
-            enviado = True
-            form = ReservaForm()
-            nombre = reserva.nombre
+
+            return redirect('landing:reservas')
 
     else:
         form = ReservaForm()

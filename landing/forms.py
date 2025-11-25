@@ -12,6 +12,7 @@ DESTINO_CHOICES = (
     ('India', 'India'),
     ('Indonesia', 'Indonesia'),
     ('Marruecos', 'Marruecos'),
+    ('Tailandia', 'Tailandia'), # Agregado Tailandia
 )
 
 
@@ -58,6 +59,7 @@ class ReservaForm(forms.Form):
     # validacion personalizada, solo letras y espacios en el nombre
     def clean_nombre(self):
         nombre = self.cleaned_data.get('nombre')
+        # EL patron que usas es correcto, maneja acentos y Ñ/ñ
         patron_letras_espacios = r'^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$'
 
         if nombre and not re.match(patron_letras_espacios, nombre):
