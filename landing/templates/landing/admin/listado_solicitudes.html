@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Solicitudes de Contacto{% endblock %}
+
+{% block content %}
+<section class="listado-main content-start-offset">
+    <h2 class="section-title">Solicitudes de Contacto (Total: {{ total_solicitudes }})</h2>
+
+    <div class="dashboard-card stats-summary">
+        <h3>Resumen de Clasificación</h3>
+
+        <p><strong>Cantidad Total de Solicitudes:</strong> {{ total_solicitudes }}</p>
+
+        <h4>Distribución por Tipo:</h4>
+        <ul class="stats-list">
+            {% for stat in estadisticas_por_categoria %}
+                <li>
+                    <strong>{{ stat.categoria }}:</strong> {{ stat.total }}
+                </li>
+            {% empty %}
+                <li>No hay solicitudes clasificadas.</li>
+            {% endfor %}
+        </ul>
+
+        <div class="api-info">
+            <p>Punto de Acceso a la API (JSON):
+                <a href="{% url 'landing:contactos-list' %}" target="_blank" class="btn-api-small">/api/consultas/</a>
+            </p>
+        </div>
+    </div>
+
+    <div class="table-container">
+        <table class="reserva-table">
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                    <th>Clasificación</th>
+                    <th>Mensaje (Extracto)</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+             {% for solicitud in solicitudes %}
+                <tr>
+                    <td>{{ solicitud.fecha_creacion|date:"d M Y H:i" }}</td>
+                    <td>{{ solicitud.nombre }}</td>
+                    <td>{{ solicitud.email }}</td>
+                    <td>
+                        <span class="tag-{{ solicitud.categoria|lower|slugify }}">
+                             {{ solicitud.categoria|default_if_none:"Sin Clasificar" }}
+                        </span>
+                    </td>
+                    <td>{{ solicitud.mensaje|truncatechars:40 }}</td>
+                    <td>
+                        <a href="{% url 'landing:solicitud_detalle' pk=solicitud.pk %}" class="btn-sm">Detalle</a>
+                        </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6">No hay solicitudes de contacto recibidas.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="back-link">
+        <a href="{% url 'landing:dashboard' %}">← Volver al Dashboard</a>
+    </div>
+
+</section>
+{% endblock %}

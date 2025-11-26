@@ -20,10 +20,11 @@
                 <li><a href="{% url 'landing:galeria' %}">Galería</a></li>
                 <li><a href="{% url 'landing:info' %}">Info</a></li>
 
+                <li><a href="{% url 'landing:home' %}#contacto">Contacto</a></li>
+
                 <li><a href="{% url 'landing:reservas' %}" class="cta-nav">Reservas</a></li>
 
                 {% if user.is_authenticated %}
-
                     {% if user.is_staff %}
                         <li><a href="{% url 'landing:dashboard' %}" class="nav-icon-link">
                             <i class="fas fa-tachometer-alt"></i> Dashboard

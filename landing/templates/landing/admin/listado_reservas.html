@@ -11,6 +11,10 @@
 <section class="listado-main content-start-offset">
     <h2 class="section-title">Reservas Recibidas (Total: {{ reservas.count }})</h2>
 
+    <div class="api-link-container">
+        <a href="{% url 'landing:reservas-list' %}" target="_blank" class="btn btn-api">Ver API REST de Reservas (JSON)</a>
+    </div>
+
     {% if reservas %}
     <div class="table-container">  <table class="reserva-table">
             <thead>

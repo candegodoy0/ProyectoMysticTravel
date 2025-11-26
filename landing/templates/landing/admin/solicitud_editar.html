@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Editar Solicitud #{{ solicitud.pk }} - Mystic Travel{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'landing/css/landing.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="reserva-main content-start-offset"> 
+    <h2 class="section-title">Editar Solicitud de {{ solicitud.nombre }}</h2>
+
+    <div class="reserva-form bg-textura">
+      <form method="post" novalidate id="reserva-edit-form"> 
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <button type="submit" class="btn-primary">GUARDAR CAMBIOS</button>
+      </form>
+    </div>
+
+    <div class="back-link">
+        <a href="{% url 'landing:solicitud_detalle' pk=solicitud.pk %}">← Cancelar y Volver</a>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/modificar_consulta.js' %}"></script>
+{% endblock %}

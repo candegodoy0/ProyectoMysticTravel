@@ -8,6 +8,6 @@
 
 ## [Proyecto desplegado en Render](https://proyectomystictravel.onrender.com)
 
-## Credenciales de acceso al Panel de Administración
+## Mis credenciales de acceso al Panel de Administración 
 Usuario: candegodoy  
 Contraseña: Cande1937

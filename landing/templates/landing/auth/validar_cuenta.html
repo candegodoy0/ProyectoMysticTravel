@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Validar Cuenta - Mystic Travel{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'landing/css/landing.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="auth-main content-start-offset">
+    <h2 class="section-title">Activar tu Cuenta</h2>
+
+    {% if messages %}
+        <ul class="messages-list">
+        {% for message in messages %}
+            <li class="{{ message.tags }}">{{ message }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+
+    <div class="auth-form bg-textura">
+        <p class="mb-4">
+            Por favor, ingresa tu <strong>correo electrónico</strong> y el <strong>código de validación</strong> que recibiste para habilitar el acceso.
+        </p>
+
+        <form method="post" novalidate>
+            {% csrf_token %}
+
+            {{ email_form.as_p }}
+            {{ codigo_form.as_p }}
+
+            <button type="submit" class="btn-primary">VALIDAR Y ACTIVAR</button>
+        </form>
+
+        <div class="form-links mt-3">
+            <p>¿Necesitas registrarte de nuevo? <a href="{% url 'landing:registro' %}">Ir a Registro</a></p>
+            <p class="mt-1">¿Ya activaste tu cuenta? <a href="{% url 'landing:login' %}">Inicia Sesión.</a></p>
+        </div>
+
+    </div>
+
+</section>
+{% endblock %}

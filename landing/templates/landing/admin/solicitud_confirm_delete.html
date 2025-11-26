@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Confirmar Eliminación - Solicitud{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'landing/css/landing.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="detalle-main content-start-offset">
+    <h2 class="section-title warning-title">Confirmar Eliminación de Solicitud</h2>
+
+    <div class="detalle-card warning-card">
+        <p class="warning-text">
+            ¿Estás seguro/a de que deseas <strong>eliminar permanentemente</strong> la solicitud de:
+        </p>
+        <h3 class="reserva-warning-name">{{ solicitud.nombre }} (Clasificación: {{ solicitud.categoria }})?</h3>
+
+        <form method="post" action="{% url 'landing:solicitud_eliminar' pk=solicitud.pk %}" id="reserva-delete-form">
+            {% csrf_token %}
+            <button type="submit" class="cta cta-delete">SÍ, ELIMINAR AHORA</button>
+        </form>
+
+        <a href="{% url 'landing:solicitud_detalle' pk=solicitud.pk %}" class="cta cta-secondary cta-back-safe">
+            NO, MANTENER SOLICITUD
+        </a>
+    </div>
+
+    <div class="back-link back-to-list">
+        <a href="{% url 'landing:solicitud_detalle' pk=solicitud.pk %}">← Volver al Detalle de Solicitud</a>
+    </div>
+
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/eliminar_consulta.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Inicio - Mystic Travel{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'landing/css/landing.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="hero-bohemio" style="background-image: url('{% static 'images/hero.jpg' %}');">
+  <div class="hero-content">
+
+    <h1 class="hero-title-main">Mystic Travel</h1>
+    <h2 class="hero-subtitle-main">Explora Destinos Exóticos</h2>
+
+    <div class="circular-focus">
+        <img src="{% static 'images/lifestyle/circular-hero.jpg' %}" alt="Mystic Travel">
+    </div>
+
+  </div>
+
+  <div class="bloque-explora">
+      <h3 class="explora-title">Tu Viaje Místico</h3>
+      <p class="explora-text">
+          Sumérgete en la magia de los lugares más remotos y espectaculares. Cada destino es una promesa de aventura y descubrimiento con un enfoque en la inmersión cultural.
+      </p>
+      <a class="cta cta-explora" href="{% url 'landing:galeria' %}">VER GALERÍA</a>
+  </div>
+</section>
+
+<div class="container">
+
+    <section class="filosofia-viaje">
+      <h2 class="section-title">Nuestra Filosofía de Viaje</h2>
+
+      <div class="filosofia-grid">
+        <div class="filosofia-card">
+          <img src="{% static 'images/lifestyle/desierto.jpg' %}" alt="mochilero con mapa">
+          <h3>Aventura y Descubrimiento</h3>
+          <p>Viajar es sumergirse. Creamos itinerarios que te alejan de lo ordinario para que descubras la magia de cada lugar, explorando rutas únicas.</p>
+        </div>
+
+        <div class="filosofia-card">
+          <img src="{% static 'images/lifestyle/pareja.jpg' %}" alt="pareja de viaje">
+          <h3>Conexiones Genuinas</h3>
+          <p>Nos enfocamos en el contacto real, ya sea con tu compañero de viaje o con las comunidades locales. Las personas hacen la experiencia inolvidable.</p>
+        </div>
+
+        <div class="filosofia-card">
+          <img src="{% static 'images/lifestyle/mercado.jpg' %}" alt="mercado exótico">
+          <h3>Inmersión Cultural</h3>
+          <p>Experimenta los colores, sabores y sonidos auténticos. Te llevamos a vivir cada destino desde adentro, no solo como un espectador.</p>
+        </div>
+      </div>
+
+      <div class="iconos-home">
+        <div>
+            <img src="{% static 'images/iconos/avion.jpg' %}" alt="avión">
+            <p>Vuelos Únicos</p>
+        </div>
+
+        <div>
+            <img src="{% static 'images/iconos/maleta.jpg' %}" alt="maleta">
+            <p>Viajes Cómodos</p>
+        </div>
+
+        <div>
+            <img src="{% static 'images/iconos/brujula.jpg' %}" alt="brújula">
+            <p>Aventuras Guiadas</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="seccion-contacto-final" id="contacto">
+        <div class="info-contacto-inner">
+
+            <div class="text-contact">
+                <h2 class="section-title-alt">Conecta con Nosotros</h2>
+                <p>"Prepárate para desempacar tu curiosidad y empacar recuerdos inolvidables."</p>
+            </div>
+
+            <div class="mini-form-container">
+
+                <form action="{% url 'landing:home' %}" method="post" id="contacto-form">
+                    {% csrf_token %}
+
+                    {% if form.non_field_errors %}
+                        <div class="error-message">
+                            {% for error in form.non_field_errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <div class="form-row">
+                        <label for="{{ form.nombre.id_for_label }}">Nombre</label>
+                        {{ form.nombre }}
+                        {% if form.nombre.errors %}
+                            <div class="error-message error-inline">
+                                {% for error in form.nombre.errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-row">
+                        <label for="{{ form.email.id_for_label }}">Correo Electrónico</label>
+                        {{ form.email }}
+                        {% if form.email.errors %}
+                            <div class="error-message error-inline">
+                                {% for error in form.email.errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-row">
+                        <label for="{{ form.mensaje.id_for_label }}">Mensaje</label>
+                        {{ form.mensaje }}
+                        {% if form.mensaje.errors %}
+                            <div class="error-message error-inline">
+                                {% for error in form.mensaje.errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <button type="submit" class="cta-mini" id="btn-contacto-submit">ENVIAR</button>
+                </form>
+
+            </div>
+        </div>
+    </section>
+
+</div>
+
+{% endblock %}
+
+{% block extra_js %}{% endblock %}

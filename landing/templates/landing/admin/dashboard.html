@@ -16,6 +16,8 @@
         <p>Desde aquí puedes gestionar las reservas y el contenido de tu sitio Mystic Travel.</p>
 
         <div class="dashboard-links">
+            <a href="{% url 'landing:listado_solicitudes' %}" class="cta">Ver Listado de Solicitudes (Contacto)</a>
+
             <a href="{% url 'landing:listado_reservas' %}" class="cta">Ver Listado de Reservas</a>
 
             <a href="/admin" class="cta">Ir al Admin de Django</a>
@@ -26,9 +28,18 @@
             </form>
         </div>
 
-        <div class="api-info">
-            <h4>Punto de Acceso a la API</h4>
-            <span class="api-url"><a href="{% url 'api:reservas-list' %}" target="_blank">/api/v1/reservas/</a></span>
+       <div class="api-info">
+            <h4>Punto de Acceso a la API (Consultas)</h4>
+
+            <span class="api-url">
+                <a href="{% url 'landing:contactos-list' %}" target="_blank">/api/consultas/</a>
+            </span>
+
+            <h4>Punto de Acceso a la API (Reservas)</h4>
+            <span class="api-url">
+                <a href="{% url 'landing:reservas-list' %}" target="_blank">/api/reservas/</a>
+            </span>
+
         </div>
     </div>
 </section>

@@ -44,4 +44,23 @@
      </div>
    </section>
 </section>
+
+   <section class="info-section" style="margin-top: 5rem; background-color: #f7f7f7; padding: 3rem; border-radius: 8px;">
+        <div class="info-text" style="width: 100%;">
+            <h2 style="border-bottom: 2px solid #007bff; padding-bottom: 10px;">🌎 Datos de Destino (API Externa)</h2>
+            {% if data_externa %}
+                <p>Información clave sobre uno de nuestros destinos estrella, **{{ data_externa.pais }}**, obtenida de una fuente externa:</p>
+                <table class="data-table small-table" style="width: 100%; margin-top: 20px;">
+                    <tr><th>Capital</th><td>{{ data_externa.capital }}</td></tr>
+                    <tr><th>Población Aprox.</th><td>{{ data_externa.poblacion }} habitantes</td></tr>
+                    <tr><th>Idiomas Oficiales</th><td>{{ data_externa.idiomas }}</td></tr>
+                    <tr><th>Moneda Principal</th><td>{{ data_externa.moneda }}</td></tr>
+                </table>
+                <small style="display: block; margin-top: 15px;">Fuente de datos: Rest Countries API</small>
+            {% else %}
+                <p class="error-message">No se pudo cargar la información externa en este momento. Intente nuevamente.</p>
+            {% endif %}
+        </div>
+    </section>
+</section>
 {% endblock %}

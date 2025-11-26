@@ -40,27 +40,47 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // envio de formulario de reserva
     const reservaForm = document.getElementById('reserva-form');
-    const submitButton = document.getElementById('btn-reserva-submit');
-    const loadingMessage = document.getElementById('mensaje-enviando');
+    const submitReservaButton = document.getElementById('btn-reserva-submit');
 
-    if (reservaForm && submitButton && loadingMessage) {
+    if (reservaForm && submitReservaButton) {
         reservaForm.addEventListener('submit', function(event) {
-
-            // antes de enviar, verifica que el boton no este ya deshabilitado
-            if (submitButton.disabled) {
-                // si ya esta deshabilitado, previene el reenvio
+            if (submitReservaButton.disabled) {
                 event.preventDefault();
                 return;
             }
-
-            // deshabilitar el botón y cambiar su texto
-            submitButton.disabled = true;
-            submitButton.textContent = 'PROCESANDO SOLICITUD...';
-
-            // mostrar el mensaje de enviando
-            loadingMessage.style.display = 'block';
-
+            // deshabilita y cambia texto
+            submitReservaButton.disabled = true;
+            submitReservaButton.textContent = 'PROCESANDO SOLICITUD...';
         });
+    }
+
+    // envio de formulario de contacto
+    const contactoForm = document.getElementById('contacto-form');
+    const submitContactoButton = document.getElementById('btn-contacto-submit');
+
+    if (contactoForm && submitContactoButton) {
+        contactoForm.addEventListener('submit', function(event) {
+            // verifica si el boton ya esta deshabilitado para evitar reenvio
+            if (submitContactoButton.disabled) {
+                event.preventDefault();
+                return;
+            }
+            // deshabilita y cambia texto
+            submitContactoButton.disabled = true;
+            submitContactoButton.textContent = 'ENVIANDO MENSAJE...';
+        });
+    }
+
+    const messageContainer = document.querySelector('.messages');
+
+    if (messageContainer) {
+        // busca si hay cualquier mensaje (exito o error)
+        const hasMessages = messageContainer.querySelector('.message-list');
+
+        if (hasMessages) {
+            messageContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
     }
 });
