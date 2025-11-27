@@ -40,19 +40,30 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+
     // envio de formulario de reserva
     const reservaForm = document.getElementById('reserva-form');
     const submitReservaButton = document.getElementById('btn-reserva-submit');
+    const mensajeEnviando = document.getElementById('mensaje-enviando');
 
     if (reservaForm && submitReservaButton) {
         reservaForm.addEventListener('submit', function(event) {
-            if (submitReservaButton.disabled) {
-                event.preventDefault();
-                return;
+
+
+            if (!submitReservaButton.disabled) {
+                // cdeshabilita el boton
+                submitReservaButton.disabled = true;
+
+                // ocultamos el boton principal
+                submitReservaButton.style.display = 'none';
+
+
+                if (mensajeEnviando) {
+                    mensajeEnviando.style.display = 'block';
+                    mensajeEnviando.querySelector('p').textContent = 'PROCESANDO SOLICITUD...';
+                }
+
             }
-            // deshabilita y cambia texto
-            submitReservaButton.disabled = true;
-            submitReservaButton.textContent = 'PROCESANDO SOLICITUD...';
         });
     }
 

@@ -9,6 +9,7 @@ import os
 from django.contrib.messages import constants as messages
 import ssl
 import certifi
+import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -31,7 +32,6 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    # WhiteNoise debe ir después de SecurityMiddleware
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -60,8 +60,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'mi_sitio.wsgi.application'
 
-
-import dj_database_url
 
 DATABASES = {
 'default': dj_database_url.config(
@@ -98,6 +96,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
 EMAIL_HOST = 'c2280296.ferozo.com'
 EMAIL_PORT = 465
 EMAIL_HOST_USER = 'candela.godoy@lalupitacontenidos.site'
@@ -106,11 +105,6 @@ EMAIL_USE_SSL = True
 EMAIL_USE_TLS = False
 
 DEFAULT_FROM_EMAIL = 'reservas@mysticaltravel.com'
-
-EMAIL_SSL_CERTFILE = None
-EMAIL_SSL_KEYFILE = None
-SSL_CERT_FILE = certifi.where()
-ssl._create_default_https_context = ssl._create_unverified_context
 
 
 MESSAGE_TAGS = {

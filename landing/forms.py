@@ -4,7 +4,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.forms import ModelForm
 from django.contrib.auth.forms import UserCreationForm
-from .models import Contacto, UsuarioPermitido
+from .models import Contacto, UsuarioPermitido, Reserva
 
 # lista de destinos
 DESTINO_CHOICES = (
@@ -20,21 +20,7 @@ DESTINO_CHOICES = (
 
 
 # formulario de reservas
-class ReservaForm(forms.Form):
-    nombre = forms.CharField(
-        label='Nombre Completo:',
-        widget=forms.TextInput(attrs={'placeholder': 'Ej. Maria Pérez'}),
-        error_messages={'required': 'Por favor, ingresa tu nombre completo.'}
-    )
-
-    email = forms.EmailField(
-        label='Correo Electrónico:',
-        widget=forms.EmailInput(attrs={'placeholder': 'ejemplo@correo.com'}),
-        error_messages={
-            'required': 'El email es obligatorio.',
-            'invalid': 'Introduce una dirección de correo electrónico válida.'
-        }
-    )
+class ReservaForm(ModelForm):
 
     destino = forms.ChoiceField(
         label='Destino de Interés:',
@@ -42,21 +28,6 @@ class ReservaForm(forms.Form):
         error_messages={
             'required': 'Por favor, selecciona un destino de la lista.',
         }
-    )
-
-    viajeros = forms.IntegerField(
-        label='Cantidad de Viajeros:',
-        widget=forms.NumberInput(attrs={'placeholder': 'Ej. 5'}),
-        error_messages={
-            'required': 'Este campo es obligatorio.',
-            'invalid': 'Por favor, introduce solo números (cantidad de personas).'
-        }
-    )
-
-    mensaje = forms.CharField(
-        label='Mensaje Adicional o Fechas Estimadas:',
-        widget=forms.Textarea(attrs={'rows': 4}),
-        required=False
     )
 
     # validacion personalizada, solo letras y espacios en el nombre
@@ -77,6 +48,36 @@ class ReservaForm(forms.Form):
             raise forms.ValidationError('La cantidad de viajeros debe ser mayor a cero.')
 
         return viajeros
+
+    class Meta:
+        model = Reserva
+        fields = ['nombre', 'email', 'destino', 'viajeros', 'mensaje']
+
+        widgets = {
+            'nombre': forms.TextInput(attrs={'placeholder': 'Ej. Maria Pérez'}),
+            'email': forms.EmailInput(attrs={'placeholder': 'ejemplo@correo.com'}),
+            'viajeros': forms.NumberInput(attrs={'placeholder': 'Ej. 5'}),
+            'mensaje': forms.Textarea(attrs={'rows': 4}),
+        }
+
+        labels = {
+            'nombre': 'Tu Nombre Completo',
+            'email': 'Correo Electrónico',
+            'viajeros': 'Cantidad de Viajeros',
+            'mensaje': 'Mensaje / Detalles Adicionales',
+        }
+
+        error_messages = {
+            'nombre': {'required': 'Por favor, ingresa tu nombre completo.'},
+            'email': {
+                'required': 'El email es obligatorio.',
+                'invalid': 'Introduce una dirección de correo electrónico válida.'
+            },
+            'viajeros': {
+                'required': 'Este campo es obligatorio.',
+                'invalid': 'Por favor, introduce solo números (cantidad de personas).'
+            }
+        }
 
 
 # formulario de contacto

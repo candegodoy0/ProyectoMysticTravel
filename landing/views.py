@@ -38,9 +38,10 @@ def enviar_multiples_emails(emails_a_enviar):
         return
 
     try:
-        context = ssl._create_unverified_context()
-        # CORRECCIÓN 4: Añadido timeout=5. Si el servidor Ferozo tarda, la página falla rápido y no se cuelga.
-        with smtplib.SMTP_SSL(settings.EMAIL_HOST, settings.EMAIL_PORT, context=context, timeout=5) as server:
+
+        context = ssl.create_default_context()
+
+        with smtplib.SMTP_SSL(settings.EMAIL_HOST, settings.EMAIL_PORT, context=context, timeout=10) as server:
 
             server.login(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)
 
@@ -68,7 +69,6 @@ def enviar_multiples_emails(emails_a_enviar):
                 )
 
     except Exception as e:
-        # Esto te mostrará en la consola si el timeout de 5 segundos se activa.
         print(f"ERROR DE ENVÍO DE EMAIL (TIMEOUT/FALLO): {e}")
 
 
@@ -125,7 +125,7 @@ def registro_avanzado(request):
                 'html_content': html_content
             }]
 
-            if not settings.IS_PROD:
+            if settings.DEBUG:
                 enviar_multiples_emails(emails_a_enviar)
 
             # guarda el usuario inactivo
@@ -334,7 +334,7 @@ def home(request):
                 'html_content': html_user
             })
 
-            if not settings.IS_PROD:
+            if settings.DEBUG:
                 enviar_multiples_emails(emails)
 
             messages.success(request, '¡Gracias por tu mensaje! Te responderemos pronto.')
@@ -449,50 +449,77 @@ def reservas(request):
         form = ReservaForm(request.POST)
 
         if form.is_valid():
-            # CORRECCIÓN 5: Usamos form.save() en lugar de Reserva.objects.create().
-            # Esto evita el error de mapeo y el bloqueo de la BD.
-            reserva = form.save()
+            nombre = form.cleaned_data['nombre']
+            email = form.cleaned_data['email']
+            destino = form.cleaned_data['destino']
+            viajeros = form.cleaned_data['viajeros']
+            mensaje = form.cleaned_data['mensaje']
 
-            emails = []
+            try:
+                # se guarda la reserva
+                reserva = form.save()
 
-            # email admin (notificacion)
-            html_admin = f"""
-            <div style="background:#f5f5f5;padding:20px;">
-                <div style="background:white;padding:20px;border-radius:8px;">
-                    <h2 style="color:#333;">Nueva Solicitud de Reserva</h2>
-                    <p><strong>Nombre:</strong> {reserva.nombre}</p>
-                    <p><strong>Destino:</strong> {reserva.destino}</p>
+                emails = []
+
+                # email al administrador
+                html_admin = f"""
+                <div style="background:#f5f5f5;padding:20px;">
+                    <div style="background:white;padding:20px;border-radius:8px;">
+                        <h2 style="color:#333;">¡Nueva Reserva Recibida!</h2>
+                        <p><strong>Nombre:</strong> {nombre}</p>
+                        <p><strong>Email:</strong> {email}</p>
+                        <p><strong>Destino:</strong> {destino}</p>
+                        <p><strong>Viajeros:</strong> {viajeros}</p>
+                        <p><strong>Mensaje:</strong></p>
+                        <p>{mensaje if mensaje else 'Sin mensaje adicional.'}</p>
+                    </div>
                 </div>
-            </div>
-            """
-            emails.append({
-                'asunto': f"Nueva Reserva | {reserva.destino} - {reserva.nombre}",
-                'destinatario': "candela.godoy@lalupitacontenidos.site",
-                'html_content': html_admin
-            })
+                """
+                emails.append({
+                    'asunto': f"NUEVA RESERVA | Mystic Travel - {nombre}",
+                    'destinatario': "candela.godoy@lalupitacontenidos.site",
+                    'html_content': html_admin
+                })
 
-            # email usuario (confirmacion)
-            html_user = f"""
-            <div style="background:#f5f5f5;padding:20px;">
-                <div style="background:white;padding:20px;border-radius:8px;">
-                    <h2>¡Gracias {reserva.nombre}!</h2>
-                    <p>Recibimos tu solicitud de reserva para <strong>{reserva.destino}</strong>.</p>
-                    <p>Nos contactaremos pronto.</p>
+                # email al usuario (confirmacion)
+                html_user = f"""
+                <div style="background:#f5f5f5;padding:20px;">
+                    <div style="background:white;padding:20px;border-radius:8px;">
+                        <h2>¡Hola {nombre}!</h2>
+                        <p>¡Tu aventura ha comenzado! Recibimos tu solicitud de reserva para {destino}.</p>
+                        <p>Nuestro equipo te contactará en breve para finalizar los detalles.</p>
+                        <p style="margin-top:20px; font-size: 0.8em; color: #666;">Detalles: {viajeros} viajeros.</p>
+                    </div>
                 </div>
-            </div>
-            """
-            emails.append({
-                'asunto': "Confirmación de Reserva | Mystic Travel",
-                'destinatario': reserva.email,
-                'html_content': html_user
-            })
+                """
+                emails.append({
+                    'asunto': f"Confirmación de Reserva | Mystic Travel - {destino}",
+                    'destinatario': email,
+                    'html_content': html_user
+                })
 
-            if not settings.IS_PROD:
-                enviar_multiples_emails(emails)
+                if settings.DEBUG:
+                    enviar_multiples_emails(emails)
 
-            messages.success(request, f"Reserva para {reserva.destino} creada con éxito!")
+                # mensaje de exito y redireccion
+                messages.success(request, f"¡Gracias por tu interés, {nombre}! Tu solicitud fue enviada con éxito.")
 
-            return redirect('landing:reservas')
+                return redirect('landing:reservas')
+
+            except Exception as e:
+                print("====================================")
+                print("  !!! ERROR CRÍTICO AL PROCESAR RESERVA !!! ")
+                print(f"Tipo de Error: {type(e)._name}")  # Se corrigió el acceso a ._name
+                print(f"Mensaje: {e}")
+                print("====================================")
+
+                messages.error(request, "Error interno al procesar la reserva. Revisar la consola del servidor.")
+                return redirect('landing:reservas')
+
+        else:
+            # si el formulario no es valido, se sigue mostrando la página con errores
+            messages.error(request, "Por favor, corrige los errores del formulario.")
+            form = ReservaForm(request.POST)  # Para que mantenga los datos ingresados
 
     else:
         form = ReservaForm()
@@ -656,7 +683,6 @@ class ReservaViewSet(viewsets.ModelViewSet):
 
 
 class ContactoViewSet(viewsets.ModelViewSet):
-    # solo permite la consulta (get) para la api/consultas/
     permission_classes = [IsAuthenticatedOrReadOnly]
     queryset = Contacto.objects.all().order_by('-fecha_creacion')
     serializer_class = ContactoSerializer
