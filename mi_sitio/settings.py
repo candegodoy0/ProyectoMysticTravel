@@ -12,12 +12,11 @@ import certifi
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-9c51vz4&w6v1k)ey%tq6@l76^)g(f3mcz8vd3y1xk35xh3z*(+'
-DEBUG = True
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-9c51vz4&w6v1k)ey%tq6@l76^)g(f3mcz8vd3y1xk35xh3z*(')
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
+IS_PROD = not DEBUG
+
 ALLOWED_HOSTS = ['proyectomystictravel.onrender.com', '127.0.0.1']
-INSTALLED_APPS = []
-
-
 
 INSTALLED_APPS = [
     'django.contrib.admin',
