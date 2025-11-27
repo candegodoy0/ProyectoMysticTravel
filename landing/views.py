@@ -1,28 +1,31 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib import messages
 from django.http import JsonResponse
-import json
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.urls import reverse
+from django.contrib import messages
 from django.contrib.auth.models import User
-from .forms import ContactoForm, ReservaForm, CodigoValidacionForm, ContactoEditForm, RegistroCompletoForm, \
-    EmailValidacionForm
-from .models import Reserva, Contacto, UsuarioPermitido
 from django.contrib.auth import login
 from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth.decorators import login_required, user_passes_test
-# api
+import json
+import requests
+import random
+
 from rest_framework import viewsets
 from rest_framework.routers import DefaultRouter
-from .serializers import ReservaSerializer, ContactoSerializer
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
+
+from .models import Reserva, Contacto, UsuarioPermitido
+from .serializers import ReservaSerializer, ContactoSerializer
+from .forms import RegistroCompletoForm, EmailValidacionForm, CodigoValidacionForm, ContactoForm, ReservaForm, \
+    ContactoEditForm
+
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import ssl
 from django.conf import settings
 from django.db.models import Count
-import requests
-import random
+
 
 
 def es_admin(user):
@@ -120,7 +123,8 @@ def registro_avanzado(request):
                 'html_content': html_content
             }]
 
-            enviar_multiples_emails(emails_a_enviar)
+            if not settings.IS_PROD:
+                enviar_multiples_emails(emails_a_enviar)
 
             # guarda el usuario inactivo
             user = form.save(commit=False)
@@ -168,6 +172,7 @@ def validar_cuenta(request):
 
                 # marca como validado
                 permitido.usuario_creado = True
+                permitido.codigo_validacion = None
                 permitido.save()
 
                 messages.success(request, 'Cuenta validada con éxito! Ya puedes iniciar sesión.')
@@ -197,8 +202,8 @@ def iniciar_sesion_avanzado(request):
 
                 # para que el formulario mantenga las etiquetas en español al re-renderizar
                 class SpanishAuthenticationForm(AuthenticationForm):
-                    def __init__(self, *args, **kwargs):
-                        super().__init__(*args, **kwargs)
+                    def _init_(self, *args, **kwargs):
+                        super()._init_(*args, **kwargs)
                         self.fields['username'].label = 'Correo Electrónico'
                         self.fields['password'].label = 'Contraseña'
 
@@ -218,8 +223,8 @@ def iniciar_sesion_avanzado(request):
     else:
         # formulario con etiquetas en español para la carga inicial
         class SpanishAuthenticationForm(AuthenticationForm):
-            def __init__(self, *args, **kwargs):
-                super().__init__(*args, **kwargs)
+            def _init_(self, *args, **kwargs):
+                super()._init_(*args, **kwargs)
                 self.fields['username'].label = 'Correo Electrónico'
                 self.fields['password'].label = 'Contraseña'
 
@@ -327,7 +332,8 @@ def home(request):
                 'html_content': html_user
             })
 
-            enviar_multiples_emails(emails)
+            if not settings.IS_PROD:
+                enviar_multiples_emails(emails)
 
             messages.success(request, '¡Gracias por tu mensaje! Te responderemos pronto.')
             nombre_contacto = nombre
@@ -484,7 +490,9 @@ def reservas(request):
                 'html_content': html_user
             })
 
-            enviar_multiples_emails(emails)
+
+            if not settings.IS_PROD:
+                enviar_multiples_emails(emails)
 
             messages.success(request, f"Reserva para {reserva.destino} creada con éxito!")
 
@@ -592,7 +600,6 @@ def listado_solicitudes(request):
     estadisticas_corregidas = []
     for item in estadisticas_por_categoria_queryset:
         if item['categoria'] is None:
-            # Reemplazamos 'None' con 'Consulta General' porque es el valor por defecto si falla.
             item['categoria'] = 'Consulta General'
         estadisticas_corregidas.append(item)
 

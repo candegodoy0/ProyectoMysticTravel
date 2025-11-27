@@ -130,3 +130,4 @@ REST_FRAMEWORK = {
     ]
 }
 
+IS_PROD = not DEBUG
