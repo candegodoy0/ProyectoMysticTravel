@@ -27,7 +27,7 @@ class UsuarioPermitido(models.Model):
     #tabla de usuarios permitidos
     nombre = models.CharField(max_length=150, verbose_name="Nombre y Apellido")
     email = models.EmailField(unique=True)
-    codigo_validacion = models.CharField(max_length=8, unique=True, verbose_name="Código de Validación")
+    codigo_validacion = models.CharField(max_length=8, unique=True, verbose_name="Código de Validación", null=True, blank=True)
     usuario_creado = models.BooleanField(default=False)
 
     def __str__(self):
