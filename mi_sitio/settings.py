@@ -13,7 +13,7 @@ import certifi
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-9c51vz4&w6v1k)ey%tq6@l76^)g(f3mcz8vd3y1xk35xh3z*(')
-DEBUG = os.environ.get('DEBUG', 'False') == 'True'
+DEBUG = True
 IS_PROD = not DEBUG
 
 ALLOWED_HOSTS = ['proyectomystictravel.onrender.com', '127.0.0.1']
@@ -31,13 +31,14 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    # WhiteNoise debe ir después de SecurityMiddleware
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'mi_sitio.urls'
@@ -128,5 +129,3 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticatedOrReadOnly'
     ]
 }
-
-IS_PROD = not DEBUG

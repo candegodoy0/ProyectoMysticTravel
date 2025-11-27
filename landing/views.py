@@ -27,7 +27,6 @@ from django.conf import settings
 from django.db.models import Count
 
 
-
 def es_admin(user):
     # chequea si el usuario esta activo y es admin
     return user.is_active and user.is_staff
@@ -40,7 +39,9 @@ def enviar_multiples_emails(emails_a_enviar):
 
     try:
         context = ssl._create_unverified_context()
-        with smtplib.SMTP_SSL(settings.EMAIL_HOST, settings.EMAIL_PORT, context=context) as server:
+        # CORRECCIÓN 4: Añadido timeout=5. Si el servidor Ferozo tarda, la página falla rápido y no se cuelga.
+        with smtplib.SMTP_SSL(settings.EMAIL_HOST, settings.EMAIL_PORT, context=context, timeout=5) as server:
+
             server.login(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)
 
             for email_data in emails_a_enviar:
@@ -67,7 +68,8 @@ def enviar_multiples_emails(emails_a_enviar):
                 )
 
     except Exception as e:
-        print(f"error al enviar emails: {e}")
+        # Esto te mostrará en la consola si el timeout de 5 segundos se activa.
+        print(f"ERROR DE ENVÍO DE EMAIL (TIMEOUT/FALLO): {e}")
 
 
 # --- vistas de autenticacion y paneles ---
@@ -447,14 +449,9 @@ def reservas(request):
         form = ReservaForm(request.POST)
 
         if form.is_valid():
-            # crea la reserva
-            reserva = Reserva.objects.create(
-                nombre=form.cleaned_data['nombre'],
-                email=form.cleaned_data['email'],
-                destino=form.cleaned_data['destino'],
-                viajeros=form.cleaned_data['viajeros'],
-                mensaje=form.cleaned_data['mensaje'],
-            )
+            # CORRECCIÓN 5: Usamos form.save() en lugar de Reserva.objects.create().
+            # Esto evita el error de mapeo y el bloqueo de la BD.
+            reserva = form.save()
 
             emails = []
 
@@ -489,7 +486,6 @@ def reservas(request):
                 'destinatario': reserva.email,
                 'html_content': html_user
             })
-
 
             if not settings.IS_PROD:
                 enviar_multiples_emails(emails)
