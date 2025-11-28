@@ -204,8 +204,8 @@ def iniciar_sesion_avanzado(request):
 
                 # para que el formulario mantenga las etiquetas en español al re-renderizar
                 class SpanishAuthenticationForm(AuthenticationForm):
-                    def _init_(self, *args, **kwargs):
-                        super()._init_(*args, **kwargs)
+                    def __init__(self, *args, **kwargs):
+                        super().__init__(*args, **kwargs)
                         self.fields['username'].label = 'Correo Electrónico'
                         self.fields['password'].label = 'Contraseña'
 
@@ -225,8 +225,8 @@ def iniciar_sesion_avanzado(request):
     else:
         # formulario con etiquetas en español para la carga inicial
         class SpanishAuthenticationForm(AuthenticationForm):
-            def _init_(self, *args, **kwargs):
-                super()._init_(*args, **kwargs)
+            def __init__(self, *args, **kwargs):
+                super().__init__(*args, **kwargs)
                 self.fields['username'].label = 'Correo Electrónico'
                 self.fields['password'].label = 'Contraseña'
 
@@ -320,14 +320,14 @@ def home(request):
 
             # email usuario (confirmacion)
             html_user = f"""
-                        <div style="background:#f5f5f5;padding:20px;">
-                            <div style="background:white;padding:20px;border-radius:8px;">
-                                <h2>¡Hola {nombre}!</h2>
-                                <p>Gracias por contactarnos. Recibimos tu mensaje, clasificado como {categoria}.</p>
-                                <p>Te responderemos pronto.</p>
+                            <div style="background:#f5f5f5;padding:20px;">
+                                <div style="background:white;padding:20px;border-radius:8px;">
+                                    <h2>¡Hola {nombre}!</h2>
+                                    <p>Gracias por contactarnos. Recibimos tu mensaje, clasificado como {categoria}.</p>
+                                    <p>Te responderemos pronto.</p>
+                                </div>
                             </div>
-                        </div>
-                        """
+                            """
             emails.append({
                 'asunto': f"Confirmación de Contacto | Mystic Travel - {categoria}",
                 'destinatario': email,
@@ -402,15 +402,15 @@ def galeria_destino(request, destino):
 
 
 def info(request):
-    # muestra info general y consume una api externa (tasas de cambio)
+    # muestra info general y consume una api externa (tasas de cambio y datos de país)
     tasa_cambio = None
     api_error = False
+    data_externa = None
 
-    # api de tasas de cambio gratuita
-    API_URL = "https://open.er-api.com/v6/latest/USD"
+    API_RATES_URL = "https://open.er-api.com/v6/latest/USD"
 
     try:
-        response = requests.get(API_URL, timeout=5)
+        response = requests.get(API_RATES_URL, timeout=15, verify=False)
         response.raise_for_status()
         data = response.json()
 
@@ -420,23 +420,49 @@ def info(request):
 
             if tasa_eur:
                 tasa_cambio = {
-                    'moneda_base': 'EUR',
-                    'moneda_destino': 'USD',
-                    'valor': round(1 / tasa_eur, 3),
+                    'moneda_base': 'USD',
+                    'moneda_destino': 'EUR',
+                    'valor': round(tasa_eur, 3),
                     'actualizacion': data.get('time_last_update_utc', 'Desconocida')
                 }
 
+
         if not tasa_cambio:
+            # Si no hay tasa, se considera error de API de tasas
             api_error = True
 
     except requests.exceptions.RequestException as e:
         api_error = True
-        print(f"Error al consumir la API externa: {e}")
-        messages.error(request, "Error de conexión con el servicio de tasas de cambio. Intenta más tarde.")
+        print(f"Error al consumir la API externa (Tasas de Cambio): {e}")
+        messages.error(request, "Error de conexión con el servicio de tasas de cambio.")
+
+    API_COUNTRY_URL = "https://restcountries.com/v3.1/name/argentina"
+
+    try:
+        response_country = requests.get(API_COUNTRY_URL, timeout=15, verify=False)
+        response_country.raise_for_status()
+        country_data = response_country.json()
+
+        if country_data and isinstance(country_data, list) and country_data[0]:
+            country = country_data[0]
+
+            idiomas = ', '.join(country.get('languages', {}).values())
+
+            data_externa = {
+                'pais': country.get('name', {}).get('common', 'Desconocido'),
+                'capital': country.get('capital', ['Desconocida'])[0],
+                'poblacion': f"{country.get('population', 0):,}".replace(',', '.'),  # Formato de miles
+                'idiomas': idiomas,
+                'moneda': list(country.get('currencies', {}).keys())[0] if country.get('currencies') else 'Desconocida'
+            }
+
+    except requests.exceptions.RequestException as e:
+        print(f"Error al consumir la API externa (Datos de País): {e}")
 
     return render(request, 'landing/public/info.html', {
         'tasa_cambio': tasa_cambio,
-        'api_error': api_error
+        'api_error': api_error,
+        'data_externa': data_externa,
     })
 
 
@@ -509,7 +535,7 @@ def reservas(request):
             except Exception as e:
                 print("====================================")
                 print("  !!! ERROR CRÍTICO AL PROCESAR RESERVA !!! ")
-                print(f"Tipo de Error: {type(e)._name}")  # Se corrigió el acceso a ._name
+                print(f"Tipo de Error: {type(e).__name__}")
                 print(f"Mensaje: {e}")
                 print("====================================")
 
@@ -519,7 +545,7 @@ def reservas(request):
         else:
             # si el formulario no es valido, se sigue mostrando la página con errores
             messages.error(request, "Por favor, corrige los errores del formulario.")
-            form = ReservaForm(request.POST)  # Para que mantenga los datos ingresados
+            form = ReservaForm(request.POST)
 
     else:
         form = ReservaForm()
