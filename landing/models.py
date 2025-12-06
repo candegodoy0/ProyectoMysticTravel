@@ -1,5 +1,6 @@
 from django.db import models
 
+
 # modelo para almacenar las reservas del formulario de reservas
 class Reserva(models.Model):
     nombre = models.CharField(max_length=150)
@@ -9,8 +10,9 @@ class Reserva(models.Model):
     mensaje = models.TextField(blank=True, null=True)
     fecha_creacion = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
+    def _str_(self):
         return f"Reserva de {self.nombre} para {self.destino}"
+
 
 # modelo para almacenar los mensajes del formulario de contacto (SOLICITUDES)
 class Contacto(models.Model):
@@ -20,15 +22,22 @@ class Contacto(models.Model):
     categoria = models.CharField(max_length=50, blank=True, null=True)
     fecha_creacion = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
+    def _str_(self):
         return f"Mensaje de Contacto de {self.nombre}"
 
+
 class UsuarioPermitido(models.Model):
-    #tabla de usuarios permitidos
+    # tabla de usuarios permitidos
     nombre = models.CharField(max_length=150, verbose_name="Nombre y Apellido")
     email = models.EmailField(unique=True)
-    codigo_validacion = models.CharField(max_length=8, unique=True, verbose_name="Código de Validación", null=True, blank=True)
+    codigo_validacion = models.CharField(max_length=8, unique=True, verbose_name="Código de Validación", null=True,
+                                         blank=True)
     usuario_creado = models.BooleanField(default=False)
+    debe_ser_staff = models.BooleanField(default=False, verbose_name="¿Debe ser Staff al registrarse?")
 
-    def __str__(self):
+    class Meta:
+        verbose_name = "Usuario Permitido"
+        verbose_name_plural = "Usuarios Permitidos"
+
+    def _str_(self):
         return f"Permitido: {self.nombre} ({self.email})"

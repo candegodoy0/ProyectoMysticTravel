@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Reserva, Contacto
+from .models import Reserva, Contacto, UsuarioPermitido
 
 @admin.register(Reserva)
 class ReservaAdmin(admin.ModelAdmin):
@@ -13,7 +13,11 @@ class ContactoAdmin(admin.ModelAdmin):
     list_filter = ('fecha_creacion',)
     search_fields = ('nombre', 'email')
 
+@admin.register(UsuarioPermitido)
+class UsuarioPermitidoAdmin(admin.ModelAdmin):
+    list_display = ('nombre', 'email', 'usuario_creado')
+    list_filter = ('usuario_creado',)
+    search_fields = ('email', 'nombre')
 
-from django.contrib import admin
 
 # Register your models here.

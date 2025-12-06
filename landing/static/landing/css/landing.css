@@ -58,148 +58,7 @@ header, nav {
     color: var(--texto);
 }
 
-
-#app-main-header {
-    background-color: var(--blanco-suave) !important;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 1000;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    border-bottom: none !important;
-    height: var(--nav-height-desktop);
-}
-
-.header-content {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 0 20px;
-    height: 100%;
-}
-
-.logo {
-    font-family: var(--titulo-font);
-    font-size: 1.8rem;
-    color: var(--tierra-oscura) !important;
-    text-decoration: none;
-    letter-spacing: 0.1em;
-    text-align: left;
-    margin-right: 30px;
-    white-space: nowrap;
-    flex-shrink: 0;
-}
-
-.main-nav {
-    display: flex;
-    flex-grow: 1;
-    justify-content: flex-end;
-}
-
-.main-nav .nav-links {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    gap: 25px;
-    align-items: center;
-}
-
-.main-nav .nav-links a,
-.main-nav .nav-links button {
-    color: var(--tierra-oscura) !important;
-    text-decoration: none;
-    font-weight: 500;
-    font-size: 1rem;
-    padding: 5px 0;
-    transition: color 0.3s ease;
-    border-bottom: none !important;
-}
-
-.main-nav .nav-links a:hover,
-.main-nav .nav-links button:hover {
-    color: var(--acento);
-}
-
-.nav-links li {
-    display: flex;
-    align-items: center;
-}
-
-/* ocultar el boton de hamburguesa en escritorio */
-.nav-toggle {
-    display: none;
-}
-
-.nav-links .cta-nav {
-    color: var(--acento) !important;
-    font-weight: 700;
-    border-bottom: 2px solid var(--acento) !important;
-    padding-bottom: 5px;
-    transition: color 0.3s, border-color 0.3s;
-}
-
-.nav-links .cta-nav:hover {
-    color: var(--tierra-oscura) !important;
-    border-color: var(--tierra-oscura);
-}
-
-/* stilos para el boton de acceder */
-.nav-links .cta-nav-acceder {
-    background-color: var(--tierra-oscura) !important;
-    color: var(--blanco-suave) !important;
-    font-weight: 600;
-    padding: 5px 10px;
-    border-radius: 5px;
-    border: 1px solid var(--tierra-oscura);
-    text-decoration: none;
-}
-
-.main-nav .nav-links li .cta-nav-acceder:hover {
-    color: var(--acento) !important;
-    background-color: var(--blanco-suave) !important;
-    border-color: var(--acento) !important;
-}
-
-.main-nav .nav-links li .cta-nav-acceder {
-    color: var(--blanco-suave) !important;
-    background-color: var(--tierra-oscura) !important;
-    border: 1px solid var(--tierra-oscura) !important;
-}
-
-.nav-icon-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    font-weight: 600;
-}
-
-.btn-nav-icon {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 1rem;
-    padding: 0;
-    margin: 0;
-    color: var(--tierra-oscura) !important;
-    font-family: var(--cuerpo-font);
-    font-weight: 600;
-    transition: color 0.3s ease;
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-}
-
-.btn-nav-icon:hover {
-    color: var(--acento) !important;
-}
-
-.nav-icon-link i, .btn-nav-icon i {
-    color: var(--tierra-oscura) !important;
-}
+/* --- estilos hero (portada principal) --- */
 
 .hero-bohemio {
    margin-top: calc(-1 * var(--content-offset-desktop));
@@ -523,7 +382,7 @@ header, nav {
    display: none;
 }
 
-
+/* --- estilos galeria / subgaleria --- */
 .gallery-menu {
    display: grid;
    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -732,6 +591,19 @@ header, nav {
     margin-top: 15px;
 }
 
+.mensaje-enviando {
+    text-align: center;
+    margin-top: 1.5rem;
+    padding: 10px;
+    background-color: var(--marfil);
+    border: 1px solid var(--terracota-suave);
+    border-radius: 8px;
+    color: var(--tierra-oscura);
+    font-weight: 600;
+    font-style: italic;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
 /* --- seccion de contacto final (mini formulario) --- */
 
 .seccion-contacto-final {
@@ -839,6 +711,8 @@ header, nav {
    transform: translateY(-2px);
    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
 }
+
+/* --- estilos de dashboard --- */
 
 .dashboard-main {
     max-width: 1000px;
@@ -1125,174 +999,8 @@ header, nav {
     display: inline-block;
 }
 
-/* estilos para el boton deshabilitado */
-.btn-primary:disabled,
-.btn-primary[disabled] {
-   background: #A9A9A9; /* Un gris claro */
-   color: #EEEEEE;
-   cursor: not-allowed;
-   pointer-events: none;
-   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
-   transform: none;
-}
-
-.btn-primary:disabled:hover {
-   background: #A9A9A9;
-   transform: none;
-   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
-}
-
-.mensaje-enviando {
-    text-align: center;
-    margin-top: 1.5rem;
-    padding: 10px;
-    background-color: var(--marfil);
-    border: 1px solid var(--terracota-suave);
-    border-radius: 8px;
-    color: var(--tierra-oscura);
-    font-weight: 600;
-    font-style: italic;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
 
 @media (max-width: 992px) {
-    /* esto es para que el header se vea bien en mobile */
-    #app-main-header {
-        height: var(--nav-height-mobile);
-        border: none !important;
-        box-shadow: none !important;
-    }
-
-    .header-content {
-        padding: 0 15px;
-        flex-direction: row;
-        gap: 0;
-        align-items: center;
-        height: 100%;
-    }
-
-    .logo {
-        font-size: 1.6rem;
-        width: auto;
-    }
-
-    /* mostrar el boton de hamburguesa */
-    .nav-toggle {
-        display: block;
-        background: none;
-        border: none;
-        color: var(--tierra-oscura);
-        font-size: 1.5rem;
-        cursor: pointer;
-        padding: 5px;
-        z-index: 1001;
-    }
-
-    /* esto oculta el menu cuando no tiene la clase nav-open */
-    .main-nav {
-        position: absolute;
-        top: var(--nav-height-mobile);
-        left: 0;
-        width: 100%;
-        max-height: 0;
-        overflow: hidden;
-        transition: max-height 0.3s ease-in-out, background-color 0.3s ease;
-        background-color: var(--blanco-suave);
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        z-index: 999;
-        display: none; /* oculta el nav en mobile por defecto */
-    }
-
-    /* esto se muestra cuando se abre el menu */
-    .main-nav.nav-open {
-        width: 100% !important;
-        max-height: 500px;
-        overflow-y: auto;
-        border-bottom: 2px solid var(--terracota-suave);
-        display: flex;
-    }
-
-    /* el fondo oscuro cuando se abre el menu */
-    body.no-scroll::after {
-        content: "";
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.5);
-        z-index: 990;
-        pointer-events: auto;
-        opacity: 1;
-        transition: opacity 0.3s ease;
-    }
-
-    .main-nav .nav-links {
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 10px 20px 20px 0;
-        width: 100%;
-        gap: 0;
-    }
-
-    .nav-links li:first-child {
-        display: block;
-    }
-
-    .nav-links li {
-        width: 100%;
-        padding: 5px 0 5px 20px;
-        display: none;
-        border-bottom: 1px dotted var(--terracota-suave);
-    }
-
-    .main-nav.nav-open .nav-links li {
-        display: block;
-    }
-
-    .nav-links li:last-child {
-        border-bottom: none;
-        padding-bottom: 0;
-    }
-
-    .main-nav .nav-links a,
-    .main-nav .nav-links button {
-        display: block;
-        width: 100%;
-        padding: 8px 10px;
-        font-size: 1.1rem;
-        text-align: left;
-        border: none !important;
-        box-shadow: none !important;
-        border-radius: 0 !important;
-        background-color: transparent !important;
-    }
-
-    .nav-links .cta-nav, .nav-links .cta-nav-acceder {
-        display: block;
-        width: 100%;
-        padding: 10px 15px !important;
-        border-radius: 5px;
-        text-align: left;
-        margin-top: 5px;
-    }
-
-    .nav-links .cta-nav {
-        border: 2px solid var(--acento) !important;
-    }
-
-    .nav-links .cta-nav:hover {
-        background-color: var(--acento);
-        color: var(--blanco-suave) !important;
-    }
-
-    .main-nav .nav-links li .cta-nav-acceder:hover {
-        background-color: var(--acento) !important;
-        color: var(--blanco-suave) !important;
-        border-color: var(--acento) !important;
-    }
-
-   /* stilos del hero en mobile */
    .hero-bohemio {
        margin-top: calc(-1 * var(--content-offset-mobile));
        min-height: 90vh;
@@ -1374,19 +1082,13 @@ header, nav {
 }
 
 @media (max-width: 768px) {
-    .header-content {
-        padding: 0 15px;
-        flex-direction: row;
-        gap: 0;
-        align-items: center;
-    }
-
    .hero-title-main {
        font-size: 2.8rem;
        margin-top: 0;
    }
 
    .hero-bohemio {
+       /* compensamos el espacio del nav en mobile */
        margin-top: calc(-1 * var(--content-offset-mobile));
        min-height: 80vh;
        padding-top: 0 !important;

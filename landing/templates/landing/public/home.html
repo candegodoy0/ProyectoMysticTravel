@@ -80,7 +80,18 @@
                 <p>"Prepárate para desempacar tu curiosidad y empacar recuerdos inolvidables."</p>
             </div>
 
-            <div class="mini-form-container">
+            <div class="mini-form-container messages">
+
+                {% if messages %}
+                    <ul class="messages-list">
+                        {% for message in messages %}
+                            <li class="{{ message.tags }} alert-box">
+                                <span class="message-content">{{ message }}</span>
+                                <button type="button" class="close-message">×</button>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
 
                 <form action="{% url 'landing:home' %}" method="post" id="contacto-form">
                     {% csrf_token %}
@@ -99,8 +110,7 @@
                         {% if form.nombre.errors %}
                             <div class="error-message error-inline">
                                 {% for error in form.nombre.errors %}
-                                    <p>{{ error }}</p>
-                                {% endfor %}
+                                    <p>{{ error.message }}</p>  {% endfor %}
                             </div>
                         {% endif %}
                     </div>
@@ -110,34 +120,29 @@
                         {{ form.email }}
                         {% if form.email.errors %}
                             <div class="error-message error-inline">
-                                {% for error in form.email.errors %}
-                                    <p>{{ error }}</p>
-                                {% endfor %}
+                                {% for error in form.email.errors %}<p>{{ error }}</p>{% endfor %}
                             </div>
                         {% endif %}
                     </div>
 
                     <div class="form-row">
-                        <label for="{{ form.mensaje.id_for_label }}">Mensaje</label>
+                        <label for="{{ form.mensaje.id_for_label }}">Tu Mensaje</label>
                         {{ form.mensaje }}
                         {% if form.mensaje.errors %}
                             <div class="error-message error-inline">
-                                {% for error in form.mensaje.errors %}
-                                    <p>{{ error }}</p>
-                                {% endfor %}
+                                {% for error in form.mensaje.errors %}<p>{{ error }}</p>{% endfor %}
                             </div>
                         {% endif %}
                     </div>
 
-                    <button type="submit" class="cta-mini" id="btn-contacto-submit">ENVIAR</button>
+                    <button type="submit" class="cta cta-submit" id="btn-contacto-submit">Enviar Consulta</button>
                 </form>
 
             </div>
         </div>
     </section>
-
 </div>
-
 {% endblock %}
 
-{% block extra_js %}{% endblock %}
+{% block extra_js %}
+{% endblock %}

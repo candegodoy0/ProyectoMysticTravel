@@ -1,13 +1,15 @@
 document.addEventListener('DOMContentLoaded', function() {
 
-    // botones para cerrar mensajes
     document.querySelectorAll('.close-message').forEach(button => {
         button.addEventListener('click', () => {
-            const messageItem = button.closest('li');
-            if (messageItem) messageItem.style.display = 'none';
+            const messageItem = button.closest('.alert-box');
+            if (messageItem) {
+                messageItem.style.display = 'none'; // deshabilita la visualizacion
+            }
         });
     });
 
+    // menu hamburguesa
     const navToggle = document.querySelector('.nav-toggle');
     const nav = document.getElementById('main-navigation');
 
@@ -41,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
 
-    // envio de formulario de reserva
+    // envio formuario reserva (deshabilita el boton al hacer submit)
     const reservaForm = document.getElementById('reserva-form');
     const submitReservaButton = document.getElementById('btn-reserva-submit');
     const mensajeEnviando = document.getElementById('mensaje-enviando');
@@ -49,12 +51,11 @@ document.addEventListener('DOMContentLoaded', function() {
     if (reservaForm && submitReservaButton) {
         reservaForm.addEventListener('submit', function(event) {
 
-
             if (!submitReservaButton.disabled) {
-                // cdeshabilita el boton
+                // deshabilita el boton
                 submitReservaButton.disabled = true;
 
-                // ocultamos el boton principal
+                // se oculta el boton principal
                 submitReservaButton.style.display = 'none';
 
 
@@ -67,7 +68,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // envio de formulario de contacto
+    // envio de formulario de ocntacto (deshabilita el boton al hacer submit)
     const contactoForm = document.getElementById('contacto-form');
     const submitContactoButton = document.getElementById('btn-contacto-submit');
 
@@ -84,14 +85,4 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    const messageContainer = document.querySelector('.messages');
-
-    if (messageContainer) {
-        // busca si hay cualquier mensaje (exito o error)
-        const hasMessages = messageContainer.querySelector('.message-list');
-
-        if (hasMessages) {
-            messageContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-    }
 });

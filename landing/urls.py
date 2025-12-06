@@ -43,8 +43,7 @@ urlpatterns = [
         template_name='landing/auth/password_reset_complete.html'
     ), name='password_reset_complete'),
 
-    path('panel/', views.user_panel, name='user_panel'),
-    path('dashboard/', views.dashboard, name='dashboard'),
+    path('panel/', views.dashboard, name='dashboard'),
 
     path('listado-reservas/', views.listado_reservas, name='listado_reservas'),
     path('reserva/<int:pk>/', views.reserva_detalle, name='reserva_detalle'),

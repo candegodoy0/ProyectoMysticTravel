@@ -117,6 +117,7 @@ MESSAGE_TAGS = {
 
 LOGIN_REDIRECT_URL = 'landing:dashboard'
 LOGOUT_REDIRECT_URL = 'landing:login'
+LOGIN_URL = '/login/'
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [

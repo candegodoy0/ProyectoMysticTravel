@@ -9,16 +9,13 @@ from django.contrib.auth.forms import AuthenticationForm
 import json
 import requests
 import random
-
 from rest_framework import viewsets
 from rest_framework.routers import DefaultRouter
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
-
 from .models import Reserva, Contacto, UsuarioPermitido
 from .serializers import ReservaSerializer, ContactoSerializer
 from .forms import RegistroCompletoForm, EmailValidacionForm, CodigoValidacionForm, ContactoForm, ReservaForm, \
     ContactoEditForm
-
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -28,12 +25,10 @@ from django.db.models import Count
 
 
 def es_admin(user):
-    # chequea si el usuario esta activo y es admin
     return user.is_active and user.is_staff
 
 
 def enviar_multiples_emails(emails_a_enviar):
-    # envia varios emails en una sola conexion smtp. super util
     if not emails_a_enviar:
         return
 
@@ -51,7 +46,6 @@ def enviar_multiples_emails(emails_a_enviar):
                 msg["From"] = settings.EMAIL_HOST_USER
                 msg["To"] = email_data["destinatario"]
 
-                # creo una version de texto plano por si el html falla
                 text_content = email_data["html_content"].replace('<p>', '\n').replace('</p>', '').replace('<h2>',
                                                                                                            '\n').replace(
                     '</h2>', '')
@@ -75,9 +69,8 @@ def enviar_multiples_emails(emails_a_enviar):
 # --- vistas de autenticacion y paneles ---
 
 def registro_avanzado(request):
-    # registro solo para emails en la tabla usuariopermitido y envia email de validacion
     if request.user.is_authenticated:
-        return redirect('landing:user_panel')
+        return redirect('landing:dashboard')
 
     if request.method == 'POST':
         form = RegistroCompletoForm(request.POST)
@@ -87,23 +80,20 @@ def registro_avanzado(request):
             nombre_completo = f"{form.cleaned_data.get('nombre')} {form.cleaned_data.get('apellido')}"
 
             try:
-                # reviso si el email esta en la tabla de permitidos
                 permitido = UsuarioPermitido.objects.get(email=email_ingresado)
             except UsuarioPermitido.DoesNotExist:
-                messages.error(request, 'Acceso restringido. No estás autorizado.')
+                messages.error(request, 'Acceso restringido. No estás autorizado a usar el sistema.')
                 return render(request, 'landing/auth/registro.html', {'form': form})
 
             if permitido.usuario_creado:
                 messages.warning(request, 'Este email ya fue registrado. Inicia sesión.')
                 return render(request, 'landing/auth/registro.html', {'form': form})
 
-            # actualiza nombre y genera codigo de validacion nuevo
             permitido.nombre = nombre_completo
             codigo_generado = ''.join(random.choices('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ', k=8))
             permitido.codigo_validacion = codigo_generado
             permitido.save()
 
-            # prepara email
             validation_url = request.build_absolute_uri(
                 reverse('landing:validar_cuenta')
             )
@@ -128,7 +118,6 @@ def registro_avanzado(request):
             if settings.DEBUG:
                 enviar_multiples_emails(emails_a_enviar)
 
-            # guarda el usuario inactivo
             user = form.save(commit=False)
             user.is_active = False
             user.first_name = form.cleaned_data.get('nombre')
@@ -138,7 +127,6 @@ def registro_avanzado(request):
             messages.success(request, 'Te llegará un correo para validar tu cuenta. Revísalo.')
             return redirect('landing:validar_cuenta')
 
-        # si el formulario tiene errores, pasamos
         pass
     else:
         form = RegistroCompletoForm()
@@ -147,9 +135,8 @@ def registro_avanzado(request):
 
 
 def validar_cuenta(request):
-    # vista para ingresar el codigo de validacion
     if request.user.is_authenticated:
-        return redirect('landing:user_panel')
+        return redirect('landing:dashboard')
 
     email_form = EmailValidacionForm(request.POST or None)
     codigo_form = CodigoValidacionForm(request.POST or None)
@@ -160,19 +147,20 @@ def validar_cuenta(request):
             codigo = codigo_form.cleaned_data['codigo']
 
             try:
-                # busca el usuario en permitidos y chequea el codigo
                 permitido = UsuarioPermitido.objects.get(email=email, codigo_validacion=codigo)
             except UsuarioPermitido.DoesNotExist:
                 messages.error(request, 'El correo o el código de validación son incorrectos.')
                 return redirect('landing:validar_cuenta')
 
             try:
-                # activa el usuario de django
                 user = User.objects.get(username=email, is_active=False)
                 user.is_active = True
+
+                if permitido.debe_ser_staff:
+                    user.is_staff = True
+
                 user.save()
 
-                # marca como validado
                 permitido.usuario_creado = True
                 permitido.codigo_validacion = None
                 permitido.save()
@@ -193,7 +181,6 @@ def validar_cuenta(request):
 
 
 def iniciar_sesion_avanzado(request):
-    # inicio de sesion con validacion de cuenta activa
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
         if form.is_valid():
@@ -202,31 +189,25 @@ def iniciar_sesion_avanzado(request):
             if not user.is_active:
                 messages.warning(request, 'Tu cuenta no ha sido validada. Revisa tu correo.')
 
-                # para que el formulario mantenga las etiquetas en español al re-renderizar
                 class SpanishAuthenticationForm(AuthenticationForm):
-                    def __init__(self, *args, **kwargs):
-                        super().__init__(*args, **kwargs)
+                    def _init_(self, *args, **kwargs):
+                        super()._init_(*args, **kwargs)
                         self.fields['username'].label = 'Correo Electrónico'
                         self.fields['password'].label = 'Contraseña'
 
                 form = SpanishAuthenticationForm(request, data=request.POST)
                 return render(request, 'landing/auth/login.html', {'form': form})
 
-            # inicio de sesion ok
             login(request, user)
             messages.success(request, f"¡Bienvenido, {user.username}!")
 
-            if user.is_staff:
-                return redirect('landing:dashboard')
-            else:
-                return redirect('landing:user_panel')
+            return redirect('landing:dashboard')
         else:
             messages.error(request, 'Correo Electrónico o contraseña incorrectos.')
     else:
-        # formulario con etiquetas en español para la carga inicial
         class SpanishAuthenticationForm(AuthenticationForm):
-            def __init__(self, *args, **kwargs):
-                super().__init__(*args, **kwargs)
+            def _init_(self, *args, **kwargs):
+                super()._init_(*args, **kwargs)
                 self.fields['username'].label = 'Correo Electrónico'
                 self.fields['password'].label = 'Contraseña'
 
@@ -234,20 +215,18 @@ def iniciar_sesion_avanzado(request):
     return render(request, 'landing/auth/login.html', {'form': form})
 
 
-@user_passes_test(es_admin, login_url='landing:login')
+@login_required
 def dashboard(request):
-    # panel de administrador. solo para is_staff
     return render(request, 'landing/admin/dashboard.html')
 
 
 @login_required
 def user_panel(request):
-    # panel de usuario. para usuarios comunes
-    return render(request, 'landing/admin/user_panel.html')
+    messages.info(request, "Sesión activa, redirigido a Dashboard.")
+    return redirect('landing:dashboard')
 
 
 def clasificar_mensaje(mensaje):
-    # clasifica el mensaje para ponerle una categoria
     mensaje_lower = mensaje.lower()
 
     comercial = ["precio", "costo", "tarifa", "compra"]
@@ -265,10 +244,19 @@ def clasificar_mensaje(mensaje):
 
 
 def home(request):
-    # vista principal con el formulario de contacto
     enviado = False
     nombre_contacto = ''
-    form = ContactoForm()
+
+    initial_data = request.session.pop('contacto_form_data', None)
+    initial_errors = request.session.pop('contacto_form_errors', None)
+
+    if initial_data:
+        form = ContactoForm(initial_data)
+        if not form.is_valid():
+            form._errors = initial_errors if initial_errors else {}
+
+    else:
+        form = ContactoForm()
 
     if request.method == 'POST':
         is_ajax = request.content_type == 'application/json'
@@ -287,10 +275,8 @@ def home(request):
             email = form.cleaned_data['email']
             mensaje = form.cleaned_data['mensaje']
 
-            # clasificacion de la solicitud
             categoria = clasificar_mensaje(mensaje)
 
-            # guarda la solicitud
             Contacto.objects.create(
                 nombre=nombre,
                 email=email,
@@ -300,13 +286,13 @@ def home(request):
 
             emails = []
 
-            # email admin
             html_admin = f"""
             <div style="background:#f5f5f5;padding:20px;">
                 <div style="background:white;padding:20px;border-radius:8px;">
                     <h2 style="color:#333;">Nueva Solicitud de Contacto</h2>
                     <p><strong>Nombre:</strong> {nombre}</p>
                     <p><strong>Email:</strong> {email}</p>
+                    <p><strong>Clasificación:</strong> {categoria}</p>
                     <p><strong>Mensaje:</strong></p>
                     <p>{mensaje}</p>
                 </div>
@@ -318,16 +304,18 @@ def home(request):
                 'html_content': html_admin
             })
 
-            # email usuario (confirmacion)
             html_user = f"""
-                            <div style="background:#f5f5f5;padding:20px;">
-                                <div style="background:white;padding:20px;border-radius:8px;">
-                                    <h2>¡Hola {nombre}!</h2>
-                                    <p>Gracias por contactarnos. Recibimos tu mensaje, clasificado como {categoria}.</p>
-                                    <p>Te responderemos pronto.</p>
-                                </div>
-                            </div>
-                            """
+                <div style="background:#f5f5f5;padding:20px;">
+                    <div style="background:white;padding:20px;border-radius:8px;">
+                        <h2>¡Gracias por contactarnos, {nombre}!</h2>
+                        <p>Hemos recibido tu mensaje correctamente. Tu consulta fue clasificada como: <strong>{categoria}</strong>.</p>
+                        <p>Nuestro equipo te responderá a la brevedad.</p>
+                        <hr style="border: none; border-top: 1px solid #eee; margin: 15px 0;">
+                        <p style="font-size: 0.9em; color: #666;">Detalles de tu mensaje:</p>
+                        <blockquote style="margin: 0; padding-left: 10px; border-left: 2px solid #007bff; color: #555;">{mensaje}</blockquote>
+                    </div>
+                </div>
+                """
             emails.append({
                 'asunto': f"Confirmación de Contacto | Mystic Travel - {categoria}",
                 'destinatario': email,
@@ -346,24 +334,40 @@ def home(request):
             enviado = True
             form = ContactoForm()
 
-            # redireccion para limpiar el post y mostrar el mensaje flash
-            return redirect('landing:home')
+            return redirect(reverse('landing:home') + '#contacto')
 
 
         else:
-            # si es post y no es ajax, mostramos errores sin redirigir
             if is_ajax:
                 return JsonResponse({'success': False, 'errors': form.errors}, status=400)
 
-    return render(request, 'landing/public/home.html', {
+            request.session['contacto_form_data'] = request.POST.dict()
+            request.session['contacto_form_errors'] = form.errors.get_json_data()
+
+            for field, errors in form.errors.items():
+
+                if field == 'nombre':
+                    continue
+
+                field_label = form.fields[field].label if form.fields[field].label else field.capitalize()
+
+                for error in errors:
+                    messages.error(request, f"Error en {field_label}: {error}")
+                    break
+
+            return redirect(reverse('landing:home') + '#contacto')
+
+    context = {
         'form': form,
         'enviado': enviado,
-        'nombre_contacto': nombre_contacto
-    })
+        'nombre_contacto': nombre_contacto,
+        'hay_errores': bool(initial_errors)
+    }
+
+    return render(request, 'landing/public/home.html', context)
 
 
 def galeria(request):
-    # lista de destinos para la galeria
     destinos = [
         {'nombre': 'Islandia', 'slug': 'islandia', 'imagenes_count': 6},
         {'nombre': 'Dubái', 'slug': 'dubai', 'imagenes_count': 7},
@@ -377,7 +381,6 @@ def galeria(request):
 
 
 def galeria_destino(request, destino):
-    # detalle de la galeria de un destino especifico
     destinos_data = {
         'islandia': {'imagenes': 6, 'desc': 'Tierra de fuego y hielo...'},
         'dubai': {'imagenes': 7, 'desc': 'Un oasis de lujo en el desierto...'},
@@ -402,7 +405,6 @@ def galeria_destino(request, destino):
 
 
 def info(request):
-    # muestra info general y consume una api externa (tasas de cambio y datos de país)
     tasa_cambio = None
     api_error = False
     data_externa = None
@@ -426,9 +428,7 @@ def info(request):
                     'actualizacion': data.get('time_last_update_utc', 'Desconocida')
                 }
 
-
         if not tasa_cambio:
-            # Si no hay tasa, se considera error de API de tasas
             api_error = True
 
     except requests.exceptions.RequestException as e:
@@ -451,7 +451,7 @@ def info(request):
             data_externa = {
                 'pais': country.get('name', {}).get('common', 'Desconocido'),
                 'capital': country.get('capital', ['Desconocida'])[0],
-                'poblacion': f"{country.get('population', 0):,}".replace(',', '.'),  # Formato de miles
+                'poblacion': f"{country.get('population', 0):,}".replace(',', '.'),
                 'idiomas': idiomas,
                 'moneda': list(country.get('currencies', {}).keys())[0] if country.get('currencies') else 'Desconocida'
             }
@@ -467,7 +467,6 @@ def info(request):
 
 
 def reservas(request):
-    # formulario de reserva de viajes
     enviado = False
     nombre = ''
 
@@ -482,12 +481,10 @@ def reservas(request):
             mensaje = form.cleaned_data['mensaje']
 
             try:
-                # se guarda la reserva
                 reserva = form.save()
 
                 emails = []
 
-                # email al administrador
                 html_admin = f"""
                 <div style="background:#f5f5f5;padding:20px;">
                     <div style="background:white;padding:20px;border-radius:8px;">
@@ -507,7 +504,6 @@ def reservas(request):
                     'html_content': html_admin
                 })
 
-                # email al usuario (confirmacion)
                 html_user = f"""
                 <div style="background:#f5f5f5;padding:20px;">
                     <div style="background:white;padding:20px;border-radius:8px;">
@@ -527,7 +523,6 @@ def reservas(request):
                 if settings.DEBUG:
                     enviar_multiples_emails(emails)
 
-                # mensaje de exito y redireccion
                 messages.success(request, f"¡Gracias por tu interés, {nombre}! Tu solicitud fue enviada con éxito.")
 
                 return redirect('landing:reservas')
@@ -535,7 +530,7 @@ def reservas(request):
             except Exception as e:
                 print("====================================")
                 print("  !!! ERROR CRÍTICO AL PROCESAR RESERVA !!! ")
-                print(f"Tipo de Error: {type(e).__name__}")
+                print(f"Tipo de Error: {type(e)._name_}")
                 print(f"Mensaje: {e}")
                 print("====================================")
 
@@ -543,7 +538,6 @@ def reservas(request):
                 return redirect('landing:reservas')
 
         else:
-            # si el formulario no es valido, se sigue mostrando la página con errores
             messages.error(request, "Por favor, corrige los errores del formulario.")
             form = ReservaForm(request.POST)
 
@@ -557,24 +551,21 @@ def reservas(request):
     })
 
 
-# --- vistas protegidas para admin (reservas) ---
+# --- vistas protegidas para staff (reservas) ---
 @user_passes_test(es_admin, login_url='landing:login')
 def listado_reservas(request):
-    # listado de todas las reservas
     reservas = Reserva.objects.all().order_by('-fecha_creacion')
     return render(request, 'landing/admin/listado_reservas.html', {'reservas': reservas})
 
 
 @user_passes_test(es_admin, login_url='landing:login')
 def reserva_detalle(request, pk):
-    # detalle de una reserva
     reserva = get_object_or_404(Reserva, pk=pk)
     return render(request, 'landing/admin/reserva_detalle.html', {'reserva': reserva})
 
 
 @user_passes_test(es_admin, login_url='landing:login')
 def reserva_editar(request, pk):
-    # editar una reserva existente
     reserva = get_object_or_404(Reserva, pk=pk)
     is_ajax = request.content_type == 'application/json'
 
@@ -582,7 +573,6 @@ def reserva_editar(request, pk):
         data = json.loads(request.body) if is_ajax else request.POST
         form = ReservaForm(data)
         if form.is_valid():
-            # actualiza los campos
             reserva.nombre = form.cleaned_data['nombre']
             reserva.email = form.cleaned_data['email']
             reserva.destino = form.cleaned_data['destino']
@@ -597,12 +587,10 @@ def reserva_editar(request, pk):
             messages.success(request, "Reserva actualizada con éxito.")
             return redirect('landing:reserva_detalle', pk=reserva.pk)
 
-        # si falla y es ajax
         else:
             if is_ajax:
                 return JsonResponse({'success': False, 'errors': form.errors}, status=400)
 
-    # formulario inicial con los datos de la reserva
     form = ReservaForm(initial={
         'nombre': reserva.nombre,
         'email': reserva.email,
@@ -616,7 +604,6 @@ def reserva_editar(request, pk):
 
 @user_passes_test(es_admin, login_url='landing:login')
 def reserva_eliminar(request, pk):
-    # confirmar y eliminar una reserva
     reserva = get_object_or_404(Reserva, pk=pk)
     is_ajax = request.content_type == 'application/json'
 
@@ -633,14 +620,12 @@ def reserva_eliminar(request, pk):
     return render(request, 'landing/admin/reserva_confirm_delete.html', {'reserva': reserva})
 
 
-# --- vistas protegidas para admin (solicitudes / contacto) ---
+# --- vistas protegidas para staff (solicitudes / contacto) ---
 @user_passes_test(es_admin, login_url='landing:login')
 def listado_solicitudes(request):
-    # listado de solicitudes de contacto con estadisticas
     solicitudes = Contacto.objects.all().order_by('-fecha_creacion')
     total_solicitudes = solicitudes.count()
 
-    # agrupa por categoria
     estadisticas_por_categoria_queryset = Contacto.objects \
         .values('categoria') \
         .annotate(total=Count('categoria')) \
@@ -662,14 +647,12 @@ def listado_solicitudes(request):
 
 @user_passes_test(es_admin, login_url='landing:login')
 def solicitud_detalle(request, pk):
-    # detalle de una solicitud de contacto
     solicitud = get_object_or_404(Contacto, pk=pk)
     return render(request, 'landing/admin/solicitud_detalle.html', {'solicitud': solicitud})
 
 
 @user_passes_test(es_admin, login_url='landing:login')
 def solicitud_editar(request, pk):
-    # editar una solicitud existente
     solicitud = get_object_or_404(Contacto, pk=pk)
 
     if request.method == 'POST':
@@ -688,7 +671,6 @@ def solicitud_editar(request, pk):
 
 @user_passes_test(es_admin, login_url='landing:login')
 def solicitud_eliminar(request, pk):
-    # eliminar una solicitud
     solicitud = get_object_or_404(Contacto, pk=pk)
 
     if request.method == 'POST':
@@ -715,7 +697,6 @@ class ContactoViewSet(viewsets.ModelViewSet):
     http_method_names = ['get']
 
 
-# configuracion de drf
 router = DefaultRouter()
 router.register(r'reservas', ReservaViewSet)
 router.register(r'contactos', ContactoViewSet)

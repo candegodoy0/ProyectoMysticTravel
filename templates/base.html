@@ -19,22 +19,20 @@
 <body>
   {% include 'header.html' %}
 
-  <main>
+<main>
     <div class="container">
         {% if messages %}
             <ul class="messages-list">
                 {% for message in messages %}
-                <li class="{{ message.tags }}">
-                    <span class="message-content">{{ message }}</span>
-                    <span class="close-message">×</span>
-                </li>
+                <li class="{{ message.tags }} alert-box"> <span class="message-content">{{ message }}</span>
+                    <button type="button" class="close-message">×</button> </li>
                 {% endfor %}
             </ul>
         {% endif %}
     </div>
 
     {% block content %}{% endblock %}
-  </main>
+</main>
 
   {% include 'footer.html' %}
 

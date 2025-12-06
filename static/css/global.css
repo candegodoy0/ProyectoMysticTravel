@@ -5,11 +5,11 @@
   --marfil: #F8F3D4;
   --blanco-suave: #FAF7F0;
   --texto: #4A4A4A;
-    --titulo-font: "Cinzel Decorative", serif;
+  --titulo-font: "Cinzel Decorative", serif;
   --cuerpo-font: "Quicksand", sans-serif;
-    --nav-height-desktop: 80px;
-  --nav-height-mobile: 95px;
+  --nav-height-desktop: 80px;
   --content-offset-desktop: var(--nav-height-desktop);
+  --nav-height-mobile: 95px;
   --content-offset-mobile: var(--nav-height-mobile);
 }
 
@@ -26,6 +26,7 @@ body{
   line-height: 1.6;
   background: var(--marfil) url('../images/texturas/papel.jpg') repeat;
   background-size: 300px 300px;
+  /* esto es para que el contenido empiece despues del header fijo */
   padding-top: var(--content-offset-desktop);
 }
 
@@ -50,6 +51,7 @@ section {
    padding: 0 20px 60px 20px;
 }
 
+/* --- estilos de botones generales (cta) --- */
 .cta, .cta-edit, .cta-delete-alt, .cta-delete, .cta-secondary {
     background: var(--acento);
     color: white;
@@ -82,7 +84,7 @@ section {
 }
 
 .cta-admin {
-    /* para el dashbord */
+    /* para el dashboard */
     background: var(--tierra-oscura);
     border-color: var(--terracota-suave);
 }
@@ -121,7 +123,7 @@ section {
     transform: translateY(-2px);
 }
 
-/* el boton primario del formulario de reserva */
+/* el boton primario de formularios grandes */
 .btn-primary {
    display: block;
    width: 100%;
@@ -166,6 +168,23 @@ section {
     transform: translateY(-1px);
 }
 
+/* estilos para el boton deshabilitado */
+.btn-primary:disabled,
+.btn-primary[disabled] {
+   background: #A9A9A9; /* un gris claro */
+   color: #EEEEEE;
+   cursor: not-allowed;
+   pointer-events: none;
+   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+   transform: none;
+}
+
+.btn-primary:disabled:hover {
+   background: #A9A9A9;
+   transform: none;
+   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+}
+
 /* mensaje de error general */
 .error-message {
    color: var(--acento);
@@ -181,6 +200,145 @@ section {
    display: inline;
 }
 
+/* --- estilos de encabezado (header y navegacion) --- */
+#app-main-header {
+    background-color: var(--blanco-suave);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    height: var(--nav-height-desktop);
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+    height: 100%;
+}
+
+.logo {
+    font-family: var(--titulo-font);
+    font-size: 1.8rem;
+    color: var(--tierra-oscura);
+    text-decoration: none;
+    letter-spacing: 0.1em;
+    text-align: left;
+    margin-right: 30px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.main-nav {
+    display: flex;
+    flex-grow: 1;
+    justify-content: flex-end;
+}
+
+.main-nav .nav-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 25px;
+    align-items: center;
+}
+
+.main-nav .nav-links a,
+.main-nav .nav-links button {
+    color: var(--tierra-oscura);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 1rem;
+    padding: 5px 0;
+    transition: color 0.3s ease;
+    border-bottom: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.main-nav .nav-links a:hover,
+.main-nav .nav-links button:hover {
+    color: var(--acento);
+}
+
+.nav-links li {
+    display: flex;
+    align-items: center;
+}
+
+/* ocultar el boton de hamburguesa en escritorio */
+.nav-toggle {
+    display: none;
+}
+
+.nav-links .cta-nav {
+    color: var(--acento);
+    font-weight: 700;
+    border-bottom: 2px solid var(--acento);
+    padding-bottom: 5px;
+    transition: color 0.3s, border-color 0.3s;
+}
+
+.nav-links .cta-nav:hover {
+    color: var(--tierra-oscura);
+    border-color: var(--tierra-oscura);
+}
+
+/* stilos para el boton de acceder */
+.nav-links .cta-nav-acceder {
+    background-color: var(--tierra-oscura);
+    color: var(--blanco-suave);
+    font-weight: 600;
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: 1px solid var(--tierra-oscura);
+    text-decoration: none;
+}
+
+.main-nav .nav-links li .cta-nav-acceder:hover {
+    color: var(--acento);
+    background-color: var(--blanco-suave);
+    border-color: var(--acento);
+}
+
+.nav-icon-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-weight: 600;
+}
+
+.btn-nav-icon {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 0;
+    margin: 0;
+    color: var(--tierra-oscura);
+    font-family: var(--cuerpo-font);
+    font-weight: 600;
+    transition: color 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.btn-nav-icon:hover {
+    color: var(--acento);
+}
+
+.nav-icon-link i, .btn-nav-icon i {
+    color: var(--tierra-oscura);
+}
+
 /* pie de pagina */
 .site-footer{
   padding: 2.5rem 0;
@@ -192,6 +350,7 @@ section {
 }
 
 
+/* --- media querys generales --- */
 @media (max-width: 992px) {
     /* esto es para que se ajuste el padding de arriba en mobile */
     body {
@@ -202,4 +361,236 @@ section {
         /* para que el ancla funcione bien en mobile */
         scroll-margin-top: calc(var(--content-offset-mobile) + 10px);
     }
+
+    /* ajustes del header en mobile */
+    #app-main-header {
+        height: var(--nav-height-mobile);
+        box-shadow: none;
+    }
+
+    .header-content {
+        padding: 0 15px;
+        flex-direction: row;
+        gap: 0;
+        align-items: center;
+        height: 100%;
+    }
+
+    .logo {
+        font-size: 1.6rem;
+        width: auto;
+    }
+
+    /* mostrar el boton de hamburguesa */
+    .nav-toggle {
+        display: block;
+        background: none;
+        border: none;
+        color: var(--tierra-oscura);
+        font-size: 1.5rem;
+        cursor: pointer;
+        padding: 5px;
+        z-index: 1001;
+    }
+
+    /* esto oculta el menu cuando no tiene la clase nav-open */
+    .main-nav {
+        position: absolute;
+        top: var(--nav-height-mobile);
+        left: 0;
+        width: 100%;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease-in-out, background-color 0.3s ease;
+        background-color: var(--blanco-suave);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        z-index: 999;
+        display: none; /* oculta el nav en mobile por defecto */
+    }
+
+    /* esto se muestra cuando se abre el menu */
+    .main-nav.nav-open {
+        width: 100% !important;
+        max-height: 500px;
+        overflow-y: auto;
+        border-bottom: 2px solid var(--terracota-suave);
+        display: flex;
+    }
+
+    /* el fondo oscuro cuando se abre el menu */
+    body.no-scroll::after {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 990;
+        pointer-events: auto;
+        opacity: 1;
+        transition: opacity 0.3s ease;
+    }
+
+    .main-nav .nav-links {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 10px 20px 20px 0;
+        width: 100%;
+        gap: 0;
+    }
+
+    .nav-links li:first-child {
+        display: block;
+    }
+
+    .nav-links li {
+        width: 100%;
+        padding: 5px 0 5px 20px;
+        display: none;
+        border-bottom: 1px dotted var(--terracota-suave);
+    }
+
+    .main-nav.nav-open .nav-links li {
+        display: block;
+    }
+
+    .nav-links li:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+
+    .main-nav .nav-links a,
+    .main-nav .nav-links button {
+        display: block;
+        width: 100%;
+        padding: 8px 10px;
+        font-size: 1.1rem;
+        text-align: left;
+        border: none;
+        box-shadow: none;
+        border-radius: 0;
+        background-color: transparent;
+    }
+
+    .nav-links .cta-nav, .nav-links .cta-nav-acceder {
+        display: block;
+        width: 100%;
+        padding: 10px 15px;
+        border-radius: 5px;
+        text-align: left;
+        margin-top: 5px;
+    }
+
+    .nav-links .cta-nav {
+        border: 2px solid var(--acento);
+    }
+
+    .nav-links .cta-nav:hover {
+        background-color: var(--acento);
+        color: var(--blanco-suave);
+    }
+
+    .main-nav .nav-links li .cta-nav-acceder:hover {
+        background-color: var(--acento);
+        color: var(--blanco-suave);
+        border-color: var(--acento);
+    }
+
+}
+
+@media (max-width: 768px) {
+    .header-content {
+        padding: 0 15px;
+        flex-direction: row;
+        gap: 0;
+        align-items: center;
+    }
+}
+
+/* --- estilos para mensajes (alertas) --- */
+
+.messages-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.messages-list .alert-box {
+    padding: 15px 20px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    font-size: 1.05rem;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: var(--cuerpo-font);
+    font-weight: 500;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* estilo para el boton de cierre */
+.close-message {
+    background: none;
+    border: none;
+    color: inherit;
+    font-size: 1.5em;
+    font-weight: bold;
+    cursor: pointer;
+    margin-left: 15px;
+    padding: 0;
+    line-height: 1;
+    opacity: 0.8;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.close-message:hover {
+    opacity: 1;
+    transform: rotate(90deg);
+}
+
+
+.messages-list .success, .messages-list .alert-success {
+    background-color: var(--terracota-suave);
+    color: var(--tierra-oscura);
+    border: 2px solid var(--tierra-oscura);
+}
+
+.messages-list .error, .messages-list .alert-error,
+.messages-list .danger, .messages-list .alert-danger {
+    background-color: #F8D7DA;
+    color: #8D2F2F;
+    border: 2px solid var(--acento);
+}
+
+.messages-list .warning, .messages-list .alert-warning {
+    background-color: var(--acento);
+    color: white;
+    border: 2px solid var(--tierra-oscura);
+}
+
+.messages-list .info, .messages-list .alert-info {
+    background-color: var(--blanco-suave);
+    color: var(--tierra-oscura);
+    border: 2px solid var(--terracota-suave);
+}
+
+.messages-list .message-content {
+    flex-grow: 1;
+}
+
+/* estilos de alertas especificas de formularios/componentes */
+.mini-form-container .alert-box {
+    background-color: #FFE0C9;
+    color: var(--tierra-oscura);
+    border: 2px solid var(--terracota-suave);
+}
+
+#contacto-form .alert-box {
+    background-color: #FFE0C9;
+    color: var(--tierra-oscura);
+    border: 2px solid var(--terracota-suave);
+    margin-bottom: 20px;
 }
