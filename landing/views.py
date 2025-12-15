@@ -504,6 +504,27 @@ def reservas(request):
 
                 emails = []
 
+                # contenido del email para el admin
+                html_admin = f"""
+                <div style="background:#f5f5f5;padding:20px;">
+                    <div style="background:white;padding:20px;border-radius:8px;">
+                        <h2 style="color:#333;">NUEVA SOLICITUD DE RESERVA</h2>
+                        <p><strong>Nombre:</strong> {nombre}</p>
+                        <p><strong>Email:</strong> {email}</p>
+                        <p><strong>Destino:</strong> {destino}</p>
+                        <p><strong>Viajeros:</strong> {viajeros}</p>
+                        <p><strong>Mensaje:</strong></p>
+                        <p>{mensaje if mensaje else 'Sin mensaje adicional.'}</p>
+                    </div>
+                </div>
+                """
+                emails.append({
+                    'asunto': f"NUEVA RESERVA | Mystic Travel - {nombre}",
+                    'destinatario': "candela.godoy@lalupitacontenidos.site",
+                    'html_content': html_admin
+                })
+
+                # contenid del email para el usuario
                 html_user = f"""
                                 <div style="background:#f5f5f5;padding:20px;">
                                     <div style="background:white;padding:20px;border-radius:8px;">
@@ -517,28 +538,10 @@ def reservas(request):
                                         <h2>¡Hola {nombre}!</h2>
                                         <p>¡Tu aventura ha comenzado! Recibimos tu solicitud de reserva para {destino}.</p>
                                         <p>Nuestro equipo te contactará en breve para finalizar los detalles.</p>
-                        <p><strong>Viajeros:</strong> {viajeros}</p>
-                        <p><strong>Mensaje:</strong></p>
-                        <p>{mensaje if mensaje else 'Sin mensaje adicional.'}</p>
-                    </div>
-                </div>
-                """
-                emails.append({
-                    'asunto': f"NUEVA RESERVA | Mystic Travel - {nombre}",
-                    'destinatario': "candela.godoy@lalupitacontenidos.site",
-                    'html_content': html_admin
-                })
-
-                html_user = f"""
-                <div style="background:#f5f5f5;padding:20px;">
-                    <div style="background:white;padding:20px;border-radius:8px;">
-                        <h2>¡Hola {nombre}!</h2>
-                        <p>¡Tu aventura ha comenzado! Recibimos tu solicitud de reserva para {destino}.</p>
-                        <p>Nuestro equipo te contactará en breve para finalizar los detalles.</p>
-                        <p style="margin-top:20px; font-size: 0.8em; color: #666;">Detalles: {viajeros} viajeros.</p>
-                    </div>
-                </div>
-                """
+                                        <p style="margin-top:20px; font-size: 0.8em; color: #666;">Detalles: {viajeros} viajeros.</p>
+                                    </div>
+                                </div>
+                                """
                 emails.append({
                     'asunto': f"Confirmación de Reserva | Mystic Travel - {destino}",
                     'destinatario': email,
@@ -555,7 +558,8 @@ def reservas(request):
             except Exception as e:
                 print("====================================")
                 print("  !!! ERROR CRÍTICO AL PROCESAR RESERVA !!! ")
-                print(f"Tipo de Error: {type(e)._name_}")
+
+                print(f"Tipo de Error: {e.__class__.__name__}")
                 print(f"Mensaje: {e}")
                 print("====================================")
 
