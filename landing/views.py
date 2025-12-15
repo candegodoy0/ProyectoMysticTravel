@@ -12,7 +12,7 @@ import random
 from rest_framework import viewsets
 from rest_framework.routers import DefaultRouter
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
-from .models import Reserva, Contacto, UsuarioPermitido
+from .models import Reserva, Contacto, UsuarioPermitido, ContenidoPagina
 from .serializers import ReservaSerializer, ContactoSerializer
 from .forms import RegistroCompletoForm, EmailValidacionForm, CodigoValidacionForm, ContactoForm, ReservaForm, \
     ContactoEditForm
@@ -22,7 +22,9 @@ from email.mime.multipart import MIMEMultipart
 import ssl
 from django.conf import settings
 from django.db.models import Count
-
+from django.views.generic.edit import UpdateView
+from django.contrib.auth.mixins import UserPassesTestMixin
+from django.urls import reverse_lazy
 
 def es_admin(user):
     return user.is_active and user.is_staff
@@ -247,6 +249,7 @@ def home(request):
     enviado = False
     nombre_contacto = ''
 
+    # recupera datos del formulario si hubo errores en una sesion anterior
     initial_data = request.session.pop('contacto_form_data', None)
     initial_errors = request.session.pop('contacto_form_errors', None)
 
@@ -286,6 +289,7 @@ def home(request):
 
             emails = []
 
+            # email para el administrador
             html_admin = f"""
             <div style="background:#f5f5f5;padding:20px;">
                 <div style="background:white;padding:20px;border-radius:8px;">
@@ -304,11 +308,19 @@ def home(request):
                 'html_content': html_admin
             })
 
+            # email para el usuario
             html_user = f"""
-                <div style="background:#f5f5f5;padding:20px;">
-                    <div style="background:white;padding:20px;border-radius:8px;">
-                        <h2>¡Gracias por contactarnos, {nombre}!</h2>
-                        <p>Hemos recibido tu mensaje correctamente. Tu consulta fue clasificada como: <strong>{categoria}</strong>.</p>
+                            <div style="background:#f5f5f5;padding:20px;">
+                                <div style="background:white;padding:20px;border-radius:8px;">
+
+                                    <div style="text-align: center; padding-bottom: 20px;">
+                                        <img src="https://proyectomystictravel.onrender.com/static/images/logo-email.png" 
+                                             alt="Logo Mystic Travel" 
+                                             style="max-width: 150px; height: auto; border: 0;">
+                                    </div>
+
+                                    <h2>¡Hola {nombre}!</h2>
+                                    <p>Hemos recibido tu mensaje correctamente. Tu consulta fue clasificada como: <strong>{categoria}</strong>.</p>
                         <p>Nuestro equipo te responderá a la brevedad.</p>
                         <hr style="border: none; border-top: 1px solid #eee; margin: 15px 0;">
                         <p style="font-size: 0.9em; color: #666;">Detalles de tu mensaje:</p>
@@ -334,18 +346,19 @@ def home(request):
             enviado = True
             form = ContactoForm()
 
+            # redireccion al home con el hash para enfocarse en la seccion
             return redirect(reverse('landing:home') + '#contacto')
 
 
-        else:
+        else:  # si la validacion falla
             if is_ajax:
                 return JsonResponse({'success': False, 'errors': form.errors}, status=400)
 
+            # guarad los datos y errores en la sesion para mostrarlos tras la redireccion
             request.session['contacto_form_data'] = request.POST.dict()
             request.session['contacto_form_errors'] = form.errors.get_json_data()
 
             for field, errors in form.errors.items():
-
                 if field == 'nombre':
                     continue
 
@@ -355,17 +368,23 @@ def home(request):
                     messages.error(request, f"Error en {field_label}: {error}")
                     break
 
+            # redireccion al home para mostrar errores de sesion
             return redirect(reverse('landing:home') + '#contacto')
+
+    try:
+        contenido_cms = ContenidoPagina.objects.get(seccion_id=1)
+    except ContenidoPagina.DoesNotExist:
+        contenido_cms = None
 
     context = {
         'form': form,
         'enviado': enviado,
         'nombre_contacto': nombre_contacto,
-        'hay_errores': bool(initial_errors)
+        'hay_errores': bool(initial_errors),
+        'contenido_cms': contenido_cms,
     }
 
     return render(request, 'landing/public/home.html', context)
-
 
 def galeria(request):
     destinos = [
@@ -485,13 +504,19 @@ def reservas(request):
 
                 emails = []
 
-                html_admin = f"""
-                <div style="background:#f5f5f5;padding:20px;">
-                    <div style="background:white;padding:20px;border-radius:8px;">
-                        <h2 style="color:#333;">¡Nueva Reserva Recibida!</h2>
-                        <p><strong>Nombre:</strong> {nombre}</p>
-                        <p><strong>Email:</strong> {email}</p>
-                        <p><strong>Destino:</strong> {destino}</p>
+                html_user = f"""
+                                <div style="background:#f5f5f5;padding:20px;">
+                                    <div style="background:white;padding:20px;border-radius:8px;">
+
+                                        <div style="text-align: center; padding-bottom: 20px;">
+                                            <img src="https://proyectomystictravel.onrender.com/static/images/logo-email.png" 
+                                                 alt="Logo Mystic Travel" 
+                                                 style="max-width: 150px; height: auto; border: 0;">
+                                        </div>
+
+                                        <h2>¡Hola {nombre}!</h2>
+                                        <p>¡Tu aventura ha comenzado! Recibimos tu solicitud de reserva para {destino}.</p>
+                                        <p>Nuestro equipo te contactará en breve para finalizar los detalles.</p>
                         <p><strong>Viajeros:</strong> {viajeros}</p>
                         <p><strong>Mensaje:</strong></p>
                         <p>{mensaje if mensaje else 'Sin mensaje adicional.'}</p>
@@ -700,3 +725,25 @@ class ContactoViewSet(viewsets.ModelViewSet):
 router = DefaultRouter()
 router.register(r'reservas', ReservaViewSet)
 router.register(r'contactos', ContactoViewSet)
+
+
+class CMSContenidoUpdateView(UserPassesTestMixin, UpdateView):
+    model = ContenidoPagina
+    fields = ['titulo_principal', 'cuerpo_seccion']
+    template_name = 'landing/admin/cms_gestor_contenidos.html'
+    success_url = reverse_lazy('landing:cms_gestor_contenidos')
+
+    # solo staff/admin puede editar el contenido
+    def test_func(self):
+        return self.request.user.is_staff or self.request.user.is_superuser
+
+    # se asegura que siempre se edite la unica instancia (pk=1 o seccion_id=1)
+    def get_object(self, queryset=None):
+        try:
+            return ContenidoPagina.objects.get(seccion_id=1)
+        except ContenidoPagina.DoesNotExist:
+            return ContenidoPagina.objects.create(
+                seccion_id=1,
+                titulo_principal="¡Bienvenido a Mystic Travel!",
+                cuerpo_seccion="Contenido inicial de la sección Acerca de Nosotros."
+            )

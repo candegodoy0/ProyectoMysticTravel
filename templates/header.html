@@ -25,6 +25,11 @@
                 <li><a href="{% url 'landing:reservas' %}" class="cta-nav">Reservas</a></li>
 
                 {% if user.is_authenticated %}
+
+                    <li class="nav-icon-link nav-username">
+                        <i class="fas fa-user-circle"></i> Hola, <strong>{{ user.username }}</strong>
+                    </li>
+
                     <li><a href="{% url 'landing:dashboard' %}" class="nav-icon-link">
                         <i class="fas fa-tachometer-alt"></i> Dashboard
                     </a></li>

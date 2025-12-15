@@ -41,3 +41,30 @@ class UsuarioPermitido(models.Model):
 
     def _str_(self):
         return f"Permitido: {self.nombre} ({self.email})"
+
+#modelo para editar contenido de forma autonoma
+
+class ContenidoPagina(models.Model):
+
+        # se asegura que solo haya una fila de contenido a editar
+        seccion_id = models.IntegerField(unique=True, default=1, editable=False)
+
+        # modificar el titulo
+        titulo_principal = models.CharField(
+            max_length=200,
+            verbose_name="Título del Héroe (Banner Principal)",
+        )
+
+        # moodificar una seccion de la pagina
+        cuerpo_seccion = models.TextField(
+            verbose_name="Cuerpo de la Sección 'Acerca de Nosotros'",
+        )
+
+        ultima_modificacion = models.DateTimeField(auto_now=True)
+
+        class Meta:
+            verbose_name = "Contenido del CMS"
+            verbose_name_plural = "Contenidos del CMS"
+
+        def __str__(self):
+            return self.titulo_principal

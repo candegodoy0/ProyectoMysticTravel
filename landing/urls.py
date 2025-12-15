@@ -2,7 +2,7 @@ from django.urls import path, include
 from . import views
 from django.contrib.auth import views as auth_views
 from rest_framework.routers import DefaultRouter
-from .views import ReservaViewSet, ContactoViewSet
+from .views import ReservaViewSet, ContactoViewSet, CMSContenidoUpdateView
 
 
 router = DefaultRouter()
@@ -44,6 +44,7 @@ urlpatterns = [
     ), name='password_reset_complete'),
 
     path('panel/', views.dashboard, name='dashboard'),
+    path('panel/cms/', CMSContenidoUpdateView.as_view(), name='cms_gestor_contenidos'),
 
     path('listado-reservas/', views.listado_reservas, name='listado_reservas'),
     path('reserva/<int:pk>/', views.reserva_detalle, name='reserva_detalle'),
