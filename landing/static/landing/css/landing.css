@@ -12,7 +12,8 @@ header, nav {
 .auth-main,
 .listado-main,
 .detalle-main,
-.dashboard-main {
+.dashboard-main,
+.admin-page {
     margin-top: 0 !important;
     padding-top: 30px;
     padding-bottom: 60px;

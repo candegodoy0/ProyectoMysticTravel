@@ -26,6 +26,7 @@ from django.views.generic.edit import UpdateView
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.urls import reverse_lazy
 from django.contrib.auth.views import PasswordResetView
+from django.contrib.messages.views import SuccessMessageMixin
 
 # clase paraverificar si el email existe antes de proceder con el envio de recuperacion contraseña
 class CustomPasswordResetView(PasswordResetView):
@@ -747,11 +748,13 @@ router.register(r'reservas', ReservaViewSet)
 router.register(r'contactos', ContactoViewSet)
 
 
-class CMSContenidoUpdateView(UserPassesTestMixin, UpdateView):
+class CMSContenidoUpdateView(SuccessMessageMixin, UserPassesTestMixin, UpdateView):
     model = ContenidoPagina
     fields = ['titulo_principal', 'cuerpo_seccion']
     template_name = 'landing/admin/cms_gestor_contenidos.html'
     success_url = reverse_lazy('landing:cms_gestor_contenidos')
+
+    success_message = "¡Los cambios en el contenido se han guardado correctamente!"
 
     # solo staff/admin puede editar el contenido
     def test_func(self):
@@ -764,6 +767,6 @@ class CMSContenidoUpdateView(UserPassesTestMixin, UpdateView):
         except ContenidoPagina.DoesNotExist:
             return ContenidoPagina.objects.create(
                 seccion_id=1,
-                titulo_principal="¡Bienvenido a Mystic Travel!",
-                cuerpo_seccion="Contenido inicial de la sección Acerca de Nosotros."
+                titulo_principal="MYSTIC TRAVEL",
+                cuerpo_seccion="Contenido de la Sección Principal (Home) del bloque explora"
             )

@@ -8,39 +8,32 @@
 {% endblock %}
 
 {% block content %}
-<section class="dashboard-main content-start-offset">
-    <h2 class="section-title">Panel de Administración</h2>
+    <section class="dashboard-main content-start-offset">
+        <h2 class="section-title">Panel de Administración</h2>
 
-    <div class="dashboard-card">
-        <h3>Bienvenido, Administrador</h3>
-        <p>Desde aquí puedes gestionar las reservas y el contenido de tu sitio Mystic Travel.</p>
+        <div class="dashboard-card">
+            <h3>Bienvenido, Administrador</h3>
+            <p>Desde aquí puedes gestionar las consultas recibidas y el contenido de tu sitio Mystic Travel.</p>
 
-        <div class="dashboard-links">
-            <a href="{% url 'landing:listado_solicitudes' %}" class="cta">Ver Listado de Solicitudes (Contacto)</a>
+            <div class="dashboard-links">
+                <a href="{% url 'landing:listado_solicitudes' %}" class="cta">Ver Listado de Solicitudes (Contacto)</a>
 
-            <a href="{% url 'landing:listado_reservas' %}" class="cta">Ver Listado de Reservas</a>
+                <a href="{% url 'landing:listado_reservas' %}" class="cta">Ver Listado de Reservas</a>
 
-            <a href="/admin" class="cta">Ir al Admin de Django</a>
+                <a href="/admin" class="cta">Ir al Admin de Django</a>
+            </div>
 
-            <form action="{% url 'landing:logout' %}" method="post" style="display: inline;">
-                {% csrf_token %}
-                <button type="submit" class="cta">Cerrar Sesión</button>
-            </form>
+           <div class="api-info">
+                <h4>Punto de Acceso a la API (Consultas)</h4>
+                <span class="api-url">
+                    <a href="{% url 'landing:contactos-list' %}" target="_blank">/api/consultas/</a>
+                </span>
+
+                <h4>Punto de Acceso a la API (Reservas)</h4>
+                <span class="api-url">
+                    <a href="{% url 'landing:reservas-list' %}" target="_blank">/api/reservas/</a>
+                </span>
+            </div>
         </div>
-
-       <div class="api-info">
-            <h4>Punto de Acceso a la API (Consultas)</h4>
-
-            <span class="api-url">
-                <a href="{% url 'landing:contactos-list' %}" target="_blank">/api/consultas/</a>
-            </span>
-
-            <h4>Punto de Acceso a la API (Reservas)</h4>
-            <span class="api-url">
-                <a href="{% url 'landing:reservas-list' %}" target="_blank">/api/reservas/</a>
-            </span>
-
-        </div>
-    </div>
-</section>
+    </section>
 {% endblock %}

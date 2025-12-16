@@ -1,11 +1,4 @@
 {% load static %}
-<head>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-
-    <link rel="stylesheet" href="{% static 'css/global.css' %}">
-    <link rel="stylesheet" href="{% static 'landing/css/landing.css' %}">
-</head>
-
 <header class="main-header" id="app-main-header">
     <div class="header-content container">
         <a href="{% url 'landing:home' %}" class="logo">MYSTIC TRAVEL</a>
@@ -16,45 +9,64 @@
 
         <nav class="main-nav" id="main-navigation">
             <ul class="nav-links">
+
                 <li><a href="{% url 'landing:home' %}">Inicio</a></li>
                 <li><a href="{% url 'landing:galeria' %}">Galería</a></li>
                 <li><a href="{% url 'landing:info' %}">Info</a></li>
 
-                <li><a href="{% url 'landing:home' %}#contacto">Contacto</a></li>
-
-                <li><a href="{% url 'landing:reservas' %}" class="cta-nav">Reservas</a></li>
-
                 {% if user.is_authenticated %}
 
                     {% if request.path|slice:":6" == '/panel' %}
+
+                        <li><a href="{% url 'landing:dashboard' %}" class="nav-icon-link {% if request.path == '/panel/' %}active{% endif %}">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a></li>
+                        <li><a href="{% url 'landing:cms_gestor_contenidos' %}" class="nav-icon-link {% if request.path == '/panel/cms/' %}active{% endif %}">
+                            <i class="fas fa-cogs"></i> Gestor CMS
+                        </a></li>
+
                         <li class="nav-icon-link nav-username">
                             <i class="fas fa-user-circle"></i><strong>{{ user.username }}</strong>
                         </li>
+
+                        <li class="nav-icon-link">
+                            <form action="{% url 'landing:logout' %}" method="post" style="display: inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="cta-nav">
+                                    <i class="fas fa-sign-out-alt"></i> Salir
+                                </button>
+                            </form>
+                        </li>
+
+                    {% else %}
+
+                        <li><a href="{% url 'landing:home' %}#contacto">Contacto</a></li>
+                        <li><a href="{% url 'landing:reservas' %}" class="cta-nav">Reservas</a></li>
+
+                        <li><a href="{% url 'landing:dashboard' %}" class="nav-icon-link">
+                            <i class="fas fa-tachometer-alt"></i> Panel
+                        </a></li>
+                        <li class="nav-icon-link">
+                            <form action="{% url 'landing:logout' %}" method="post" style="display: inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="logout-btn">
+                                    <i class="fas fa-sign-out-alt"></i> Salir
+                                </button>
+                            </form>
+                        </li>
+
                     {% endif %}
 
-                    <li><a href="{% url 'landing:dashboard' %}" class="nav-icon-link">
-                        <i class="fas fa-tachometer-alt"></i> Dashboard
-                    </a></li>
-
-                {% if request.path|slice:":6" == '/panel' %}
-        <li><a href="{% url 'landing:cms_gestor_contenidos' %}" class="nav-icon-link">
-            <i class="fas fa-cogs"></i> Gestor CMS
-        </a></li>
-    {% endif %}
-                    <li>
-                        <form action="{% url 'landing:logout' %}" method="post" style="display: inline;">
-                            {% csrf_token %}
-                            <button type="submit" class="btn-nav-icon">
-                                <i class="fas fa-sign-out-alt"></i> Salir
-                            </button>
-                        </form>
-                    </li>
-
                 {% else %}
+
+                    <li><a href="{% url 'landing:home' %}#contacto">Contacto</a></li>
+                    <li><a href="{% url 'landing:reservas' %}" class="cta-nav">Reservas</a></li>
                     <li><a href="{% url 'landing:login' %}" class="cta-nav-acceder">
                         <i class="fas fa-user-circle"></i> Acceder
                     </a></li>
+
                 {% endif %}
+
             </ul>
         </nav>
     </div>
