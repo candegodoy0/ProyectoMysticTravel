@@ -9,9 +9,12 @@
 
 {% block content %}
 <section class="hero-bohemio" style="background-image: url('{% static 'images/hero.jpg' %}');">
-  <div class="hero-content">
+ <div class="hero-content">
 
-    <h1 class="hero-title-main">Mystic Travel</h1>
+    <h1 class="hero-title-main">
+        {% if contenido_cms %}{{ contenido_cms.titulo_principal }}{% else %}Mystic Travel{% endif %}
+    </h1>
+
     <h2 class="hero-subtitle-main">Explora Destinos Exóticos</h2>
 
     <div class="circular-focus">
@@ -23,7 +26,11 @@
   <div class="bloque-explora">
       <h3 class="explora-title">Tu Viaje Místico</h3>
       <p class="explora-text">
-          Sumérgete en la magia de los lugares más remotos y espectaculares. Cada destino es una promesa de aventura y descubrimiento con un enfoque en la inmersión cultural.
+          {% if contenido_cms %}
+              {{ contenido_cms.cuerpo_seccion | safe }}
+          {% else %}
+              Sumérgete en la magia de los lugares más remotos y espectaculares. Cada destino es una promesa de aventura y descubrimiento con un enfoque en la inmersión cultural.
+          {% endif %}
       </p>
       <a class="cta cta-explora" href="{% url 'landing:galeria' %}">VER GALERÍA</a>
   </div>

@@ -28,7 +28,7 @@
 
                     {% if request.path|slice:":6" == '/panel' %}
                         <li class="nav-icon-link nav-username">
-                            <i class="fas fa-user-circle"></i> Hola, <strong>{{ user.username }}</strong>
+                            <i class="fas fa-user-circle"></i><strong>{{ user.username }}</strong>
                         </li>
                     {% endif %}
 
@@ -36,6 +36,11 @@
                         <i class="fas fa-tachometer-alt"></i> Dashboard
                     </a></li>
 
+                {% if request.path|slice:":6" == '/panel' %}
+        <li><a href="{% url 'landing:cms_gestor_contenidos' %}" class="nav-icon-link">
+            <i class="fas fa-cogs"></i> Gestor CMS
+        </a></li>
+    {% endif %}
                     <li>
                         <form action="{% url 'landing:logout' %}" method="post" style="display: inline;">
                             {% csrf_token %}

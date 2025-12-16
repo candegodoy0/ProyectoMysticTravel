@@ -1,42 +1,70 @@
-{% extends 'landing/admin/base_admin.html' %} 
+{% extends 'base.html' %}
+{% load static %}
 
 {% block title %}CMS - Gestor de Contenidos{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'landing/css/landing.css' %}">
+{% endblock %}
+
 {% block content %}
-<div class="admin-content-header">
-    <h2><i class="fas fa-edit"></i> Gestor de Contenidos (CMS)</h2>
-    <p class="subtitle">Modifica el título y la filosofía de la página de Inicio.</p>
-</div>
+<section class="admin-page content-start-offset">
+    <div class="admin-header-panel">
+        <h2 class="section-title"></i> Gestor de Contenidos (CMS)</h2>
+        <p class="intro-paragraph">Modifica el título y el contenido del bloque explora (forma con pico) de la página de Inicio.</p>
+    </div>
 
-<div class="card p-4">
-    <form method="post">
-        {% csrf_token %}
-
-        <h3 class="mb-3">Sección Principal de Inicio (Home)</h3>
-        
-        <div class="form-group mb-3">
-            <label for="{{ form.titulo_principal.id_for_label }}">Título Principal (Home Hero)</label>
-            {{ form.titulo_principal }}
-            {% for error in form.titulo_principal.errors %}
-                <p class="text-danger small">{{ error }}</p>
+    {% if messages %}
+        <div class="messages-container my-3">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
             {% endfor %}
         </div>
-        
-        <div class="form-group mb-4">
-            <label for="{{ form.cuerpo_seccion.id_for_label }}">Contenido de la Sección (Filosofía/Acerca de)</label>
-            {{ form.cuerpo_seccion }}
-            {% for error in form.cuerpo_seccion.errors %}
-                <p class="text-danger small">{{ error }}</p>
-            {% endfor %}
+    {% endif %}
+
+    <div class="reserva-form bg-textura">
+        <form method="post">
+            {% csrf_token %}
+
+            {{ form.non_field_errors }}
+
+            <h3 class="subsection-title">Contenido de la Sección Principal (Home)</h3>
+
+
+            <div class="form-row">
+                <label for="{{ form.titulo_principal.id_for_label }}">Título del Hero</label>
+                {{ form.titulo_principal }}
+                {% if form.titulo_principal.errors %}
+                    <div class="error-message">
+                        {% for error in form.titulo_principal.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-row">
+                <label for="{{ form.cuerpo_seccion.id_for_label }}">Cuerpo de la Sección "Tu Viaje Místico"</label>
+                {{ form.cuerpo_seccion }}
+                {% if form.cuerpo_seccion.errors %}
+                    <div class="error-message">
+                        {% for error in form.cuerpo_seccion.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <button type="submit" class="btn-primary mt-4">
+                <i class="fas fa-save"></i> GUARDAR CAMBIOS
+            </button>
+        </form>
+
+        <div class="back-link mt-3">
+            <a href="{% url 'landing:home' %}" target="_blank">
+                <i class="fas fa-external-link-alt"></i> Ver Página de Inicio
+            </a>
         </div>
-
-        <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Guardar Cambios del CMS</button>
-    </form>
-    
-    <hr class="mt-4">
-    <a href="{% url 'landing:home' %}" class="btn btn-outline-info mt-2" target="_blank">
-        <i class="fas fa-eye"></i> Ver Web con cambios
-    </a>
-</div>
-
+    </div>
+</section>
 {% endblock %}
