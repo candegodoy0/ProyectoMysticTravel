@@ -25,6 +25,22 @@ from django.db.models import Count
 from django.views.generic.edit import UpdateView
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.urls import reverse_lazy
+from django.contrib.auth.views import PasswordResetView
+
+# clase paraverificar si el email existe antes de proceder con el envio de recuperacion contraseña
+class CustomPasswordResetView(PasswordResetView):
+
+    def form_valid(self, form):
+        email_ingresado = form.cleaned_data['email']
+
+        if not User.objects.filter(username=email_ingresado).exists():
+            messages.warning(self.request,
+                             "El correo electrónico ingresado no se encuentra registrado en nuestro sistema.")
+
+            return self.form_invalid(form)
+
+            # si el usuario existe, procedemos al envio estandar
+        return super().form_valid(form)
 
 def es_admin(user):
     return user.is_active and user.is_staff

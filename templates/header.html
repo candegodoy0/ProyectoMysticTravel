@@ -26,9 +26,11 @@
 
                 {% if user.is_authenticated %}
 
-                    <li class="nav-icon-link nav-username">
-                        <i class="fas fa-user-circle"></i> Hola, <strong>{{ user.username }}</strong>
-                    </li>
+                    {% if request.path|slice:":6" == '/panel' %}
+                        <li class="nav-icon-link nav-username">
+                            <i class="fas fa-user-circle"></i> Hola, <strong>{{ user.username }}</strong>
+                        </li>
+                    {% endif %}
 
                     <li><a href="{% url 'landing:dashboard' %}" class="nav-icon-link">
                         <i class="fas fa-tachometer-alt"></i> Dashboard
@@ -42,6 +44,7 @@
                             </button>
                         </form>
                     </li>
+
                 {% else %}
                     <li><a href="{% url 'landing:login' %}" class="cta-nav-acceder">
                         <i class="fas fa-user-circle"></i> Acceder

@@ -2,8 +2,8 @@ from django.urls import path, include
 from . import views
 from django.contrib.auth import views as auth_views
 from rest_framework.routers import DefaultRouter
-from .views import ReservaViewSet, ContactoViewSet, CMSContenidoUpdateView
-
+from .views import ReservaViewSet, ContactoViewSet, CMSContenidoUpdateView, CustomPasswordResetView
+from django.urls import reverse_lazy
 
 router = DefaultRouter()
 router.register(r'reservas', ReservaViewSet, basename='reservas')
@@ -23,11 +23,11 @@ urlpatterns = [
     path('login/', views.iniciar_sesion_avanzado, name='login'),
     path('logout/', auth_views.LogoutView.as_view(next_page='landing:login'), name='logout'),
 
-    path('reset-password/', auth_views.PasswordResetView.as_view(
+    path('reset-password/', CustomPasswordResetView.as_view(  # <-- Usamos la nueva vista
         template_name='landing/auth/password_reset_form.html',
         email_template_name='landing/auth/password_reset_email.txt',
         subject_template_name='landing/auth/password_reset_subject.txt',
-        success_url='/password-reset-done/'
+        success_url=reverse_lazy('landing:password_reset_done')
     ), name='password_reset'),
 
     path('password-reset-done/', auth_views.PasswordResetDoneView.as_view(
