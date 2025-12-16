@@ -23,9 +23,10 @@ urlpatterns = [
     path('login/', views.iniciar_sesion_avanzado, name='login'),
     path('logout/', auth_views.LogoutView.as_view(next_page='landing:login'), name='logout'),
 
-    path('reset-password/', CustomPasswordResetView.as_view(  # <-- Usamos la nueva vista
+    path('reset-password/', CustomPasswordResetView.as_view(
         template_name='landing/auth/password_reset_form.html',
-        email_template_name='landing/auth/password_reset_email.txt',
+        email_template_name='landing/auth/password_reset_email.html',
+        html_email_template_name='landing/auth/password_reset_email.html',
         subject_template_name='landing/auth/password_reset_subject.txt',
         success_url=reverse_lazy('landing:password_reset_done')
     ), name='password_reset'),

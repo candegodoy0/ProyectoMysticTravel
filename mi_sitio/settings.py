@@ -124,3 +124,5 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticatedOrReadOnly'
     ]
 }
+
+DOMAIN = 'proyectomystictravel.onrender.com'

@@ -30,17 +30,26 @@ from django.contrib.messages.views import SuccessMessageMixin
 
 # clase paraverificar si el email existe antes de proceder con el envio de recuperacion contraseña
 class CustomPasswordResetView(PasswordResetView):
-
     def form_valid(self, form):
-        email_ingresado = form.cleaned_data['email']
+        email_ingresado = form.cleaned_data['email'].lower()
 
-        if not User.objects.filter(username=email_ingresado).exists():
+        user = User.objects.filter(email__iexact=email_ingresado).first() or \
+               User.objects.filter(username__iexact=email_ingresado).first()
+
+        if not user:
             messages.warning(self.request,
-                             "El correo electrónico ingresado no se encuentra registrado en nuestro sistema.")
-
+                             "El correo electrónico ingresado no se encuentra registrado.")
             return self.form_invalid(form)
 
-            # si el usuario existe, procedemos al envio estandar
+        if not user.email:
+            user.email = email_ingresado
+            user.save()
+
+        # verifica que este activo
+        if not user.is_active:
+            messages.error(self.request, "Esta cuenta aún no ha sido validada. Revisa tu correo de bienvenida.")
+            return self.form_invalid(form)
+
         return super().form_valid(form)
 
 def es_admin(user):
@@ -119,7 +128,8 @@ def registro_avanzado(request):
 
             asunto = "Validación de Cuenta - Mystic Travel"
             html_content = f"""
-            <div style="padding:20px; text-align:center;">
+            <div style="padding:20px; text-align:center; font-family: sans-serif;">
+                <img src="https://proyectomystictravel.onrender.com/static/images/logo-email.png" alt="Logo" style="max-width: 150px; margin-bottom: 20px;">
                 <h2>¡Hola {permitido.nombre}!</h2>
                 <p>Usa este código para activar tu cuenta:</p>
                 <h1 style="color:#007bff; background:#e9ecef; padding:10px; border-radius:5px; display:inline-block;">{permitido.codigo_validacion}</h1>
