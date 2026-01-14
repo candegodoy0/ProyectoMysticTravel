@@ -104,6 +104,22 @@ Permite lectura desde clientes externos.
 
 ---
 
+## 📁 Estructura del proyecto
+ProyectoMysticTravel/
+│── landing/
+│   ├── templates/
+│   ├── static/
+│   ├── views.py
+│   ├── models.py
+│   ├── forms.py
+│   └── serializers.py
+│
+├── mi_sitio/
+│── manage.py
+│── requirements.txt
+│── README.md
+
+---
 
 ## 👤 Autora
 **Candela Godoy**  
