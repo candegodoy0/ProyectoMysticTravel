@@ -104,4 +104,8 @@ Permite lectura desde clientes externos.
 
 ---
 
-## Estructura del proyecto
+---
+
+## 👤 Autora
+**Candela Godoy**  
+Desarrolladora Backend / FullStack Jr.
