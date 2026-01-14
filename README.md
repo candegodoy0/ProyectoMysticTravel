@@ -104,7 +104,6 @@ Permite lectura desde clientes externos.
 
 ---
 
----
 
 ## 👤 Autora
 **Candela Godoy**  
