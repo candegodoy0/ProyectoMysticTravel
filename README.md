@@ -102,6 +102,6 @@ Permite lectura desde clientes externos.
 
 ---
 
-## 👤 Autora
+## 👩‍💻 Autora
 **Candela Godoy**  
 Desarrolladora Backend / FullStack Jr.
