@@ -5,9 +5,7 @@ Incluye un **panel administrativo**, sistema de autenticación avanzada, **CMS p
 
 ---
 
-## Proyecto desplegado
-🔗 **https://proyectomystictravel.onrender.com**
-
+## [Proyecto desplegado y disponible para uso online](https://proyectomystictravel.onrender.com)
 ---
 
 ## Funcionalidades principales
