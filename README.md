@@ -82,23 +82,64 @@ Permite lectura desde clientes externos.
 
 ## Capturas de pantalla  
 
-### Home
-<img src="img/home.png" width="300">
+### Home (vista completa)
+<img src="img/home-hero.png" width="300">
+<img src="img/home-filosofia.png" width="300">
+<img src="img/home-contacto.png" width="300">
+
+---
 
 ### Galería de Destinos
 <img src="img/galeria.png" width="300">
 
-### Vista de Subgalería
-<img src="img/subgaleria.png" width="300">
+### Subgalería por destino
+<img src="img/subgaleria-1.png" width="300">
+<img src="img/subgaleria-2.png" width="300">
+
+---
+
+### Sección Info (APIs externas)
+<img src="img/info-tasas.png" width="300">
+<img src="img/info-pais.png" width="300">
+
+---
+
+### Formulario de Reservas
+<img src="img/reservas-form.png" width="300">
+<img src="img/reservas-confirmacion.png" width="300">
+
+---
 
 ### Formulario de Contacto
-<img src="img/contacto.png" width="300">
+<img src="img/contacto-form.png" width="300">
+<img src="img/contacto-clasificacion.png" width="300">
 
-### Formulario de Reserva
-<img src="img/reserva.png" width="300">
+---
 
-### Panel Administrativo
-<img src="img/panel.png" width="300">
+## Panel Administrativo (Staff)
+
+### Dashboard
+<img src="img/panel-dashboard.png" width="300">
+
+### Gestión de Consultas
+<img src="img/panel-consultas-listado.png" width="300">
+<img src="img/panel-consultas-detalle.png" width="300">
+<img src="img/panel-consultas-editar.png" width="300">
+
+### Gestión de Reservas
+<img src="img/panel-reservas-listado.png" width="300">
+<img src="img/panel-reservas-detalle.png" width="300">
+<img src="img/panel-reservas-editar.png" width="300">
+
+### Editor CMS (Home dinámico)
+<img src="img/panel-cms.png" width="300">
+
+---
+
+### Perfil / Autenticación
+<img src="img/login.png" width="300">
+<img src="img/registro.png" width="300">
+<img src="img/recuperar.png" width="300">
 
 ---
 
