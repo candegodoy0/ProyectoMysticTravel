@@ -82,6 +82,9 @@ Permite lectura desde clientes externos.
 
 ## Capturas de pantalla  
 
+A continuación se muestran **algunas vistas** representativas de la página:
+
+
 ### Home (vista completa)
 <img src="img/home-hero.png" width="300">
 <img src="img/home-filosofia.png" width="300">
