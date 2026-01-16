@@ -62,12 +62,20 @@ WSGI_APPLICATION = 'mi_sitio.wsgi.application'
 
 
 DATABASES = {
-'default': dj_database_url.config(
-    default='postgresql://proyectomystictravel_user:K55PkZqCGGg0e2HbDbvaKA92XI5ZULfE@dpg-d4f108v5r7bs73cp1t00-a.oregon-postgres.render.com/proyectomystictravel',
-    conn_max_age=600,
-ssl_require=True
-)
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'proyectomystictravel_k8mk',
+        'USER': 'candegodoy',
+        'PASSWORD': 'N8Klcecy1tYMm0c1DH07xXwFlvXU36Qa',
+        'HOST': 'dpg-d5kppmogjchc73bmsolg-a.oregon-postgres.render.com',
+        'PORT': '5432',
+        'CONN_MAX_AGE': 600,
+        'OPTIONS': {
+            'sslmode': 'require',
+        },
+    }
 }
+
 
 
 AUTH_PASSWORD_VALIDATORS = [
