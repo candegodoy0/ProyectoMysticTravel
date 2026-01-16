@@ -101,6 +101,7 @@ A continuación se muestran **solo algunas** vistas representativas de la págin
 
  ### (APIs externas)
 <img src="img/info-api.png" width="300">
+
 ---
 
 ### Formulario de Reservas
