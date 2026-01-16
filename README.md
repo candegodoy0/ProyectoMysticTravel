@@ -95,11 +95,11 @@ A continuación se muestran **solo algunas** vistas representativas de la págin
 
 ---
 
-### Sección Info (APIs externas)
+### Sección Info 
 <img src="img/info.png" width="300">
 <img src="img/info2.png" width="300">
 
- ## (APIs externas)
+ ### (APIs externas)
 <img src="img/info-api.png" width="300">
 ---
 
