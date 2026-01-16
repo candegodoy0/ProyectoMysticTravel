@@ -82,7 +82,7 @@ Permite lectura desde clientes externos.
 
 ## Capturas de pantalla  
 
-A continuación se muestran **solo algunas** vistas representativas de la página:
+A continuación se muestran solo **algunas vistas** representativas de la página:
 
 ### Home (vista completa)
 <img src="img/home-hero.png" width="300">
